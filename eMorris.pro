@@ -9,7 +9,6 @@ QT       += core gui
 TARGET = eMorris
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp
 
