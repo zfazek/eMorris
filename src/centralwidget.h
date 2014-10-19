@@ -1,5 +1,4 @@
-#ifndef CENTRALWIDGET_H
-#define CENTRALWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <stdio.h>
@@ -67,4 +66,3 @@ signals:
 
 };
 
-#endif // CENTRALWIDGET_H

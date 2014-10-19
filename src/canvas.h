@@ -1,5 +1,4 @@
-#ifndef CANVAS_H
-#define CANVAS_H
+#pragma once
 
 #include "table.h"
 #include "mill.h"
@@ -19,4 +18,3 @@ class Canvas : public QWidget {
 
 };
 
-#endif // CANVAS_H

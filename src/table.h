@@ -1,5 +1,4 @@
-#ifndef TABLE_H
-#define TABLE_H
+#pragma once
 
 #include <vector>
 
@@ -18,4 +17,3 @@ class Table {
     private:
 };
 
-#endif // TABLE_H

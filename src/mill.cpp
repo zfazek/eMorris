@@ -1,4 +1,5 @@
 #include "mill.h"
+#include "move.h"
 #include "table.h"
 #include <stdio.h>
 #include <iostream>
@@ -144,15 +145,18 @@ Mill::Mill() {
     this->initRules();
     this->initTable(true);
     /*
-    int a[] = {0,0,0,
-        2,0,0,
-        0,2,0,
-        0,1,0,  0,2,0,
-        0,0,0,
-        1,1,0,
-        0,0,0};
-    this->setPos(a, 6, 6, true);
-    */
+       int a[] = {0,0,0,
+       2,0,0,
+       0,2,0,
+       0,1,0,  0,2,0,
+       0,0,0,
+       1,1,0,
+       0,0,0};
+       this->setPos(a, 6, 6, true);
+       */
+}
+
+Mill::~Mill() {
 }
 
 /******************************************************************************
@@ -802,5 +806,37 @@ string Mill::getBestMove() {
             }
         }
     }
+    return convertMoveToCoord(bestMove);
+}
+
+void Mill::backupPosition() {
+    whiteToMove_backup = table->whiteToMove;
+    whiteHand_backup = table->whiteHand;
+    blackHand_backup = table->blackHand;
+    for (int i = 0; i < 24; i++) t_backup[i] = table->table[i];
+}
+
+void Mill::restorePosition() {
+    table->whiteToMove = whiteToMove_backup;
+    table->whiteHand = whiteHand_backup;
+    table->blackHand = blackHand_backup;
+    for (int i = 0; i < 24; i++) table->table[i] = t_backup[i];
+}
+
+string Mill::getBestMoveMCTS() {
+    Move *move = new Move(this);
+    string bestMove = "";
+    for (int i = 0; i < 500; i++) {
+        backupPosition();
+        move->selectAction();
+        restorePosition();
+    }
+    bestMove = move->getBest()->currMove;
+    for (Move *c : move->getChildren()) {
+        c->print();
+    }
+    printf("best move: ");
+    move->getBest()->print();
+    delete move;
     return convertMoveToCoord(bestMove);
 }

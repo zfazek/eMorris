@@ -1,12 +1,11 @@
-
-#ifndef MILL_H
-#define MILL_H
+#pragma once
 
 #include <vector>
 #include <string>
 
 class QString;
 class Table;
+
 
 static const int EMPTY = 0;
 static const int WHITE = 1;
@@ -16,6 +15,7 @@ class Mill {
     public:
 
         Mill();
+        ~Mill();
         Table *table;
         void initTable(bool);
         void initRules();
@@ -41,6 +41,9 @@ class Mill {
         int getScore();
         int getNofNeighbors(int);
         std::string getBestMove();
+        std::string getBestMoveMCTS();
+        void backupPosition();
+        void restorePosition();
 
     private:
         int mill[24][4];
@@ -52,6 +55,10 @@ class Mill {
         bool isNeighbor(int, int);
         int getNofPiece(int);
         void printMoves(std::vector<std::string>);
+
+        bool whiteToMove_backup;
+        int whiteHand_backup;
+        int blackHand_backup;
+        int t_backup[24];
 };
 
-#endif // MILL_H

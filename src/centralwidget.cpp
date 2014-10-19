@@ -7,6 +7,7 @@
 #include "table.h"
 #include "mill.h"
 #include "canvas.h"
+#include <thread>
 
 using namespace std;
 
@@ -82,7 +83,7 @@ void CentralWidget::MoveDoubleClicked(QListWidgetItem *item) {
 }
 
 void CentralWidget::makeMove() {
-    string bestMove = mill->getBestMove();
+    string bestMove = mill->getBestMoveMCTS();
     mill->move(QString::fromStdString(bestMove), true);
     printTable();
     int isEnd = mill->isEnd();
@@ -99,7 +100,7 @@ void CentralWidget::printGameOver(int isEnd) {
         msgBox.setText("White Won!");
     else 
         msgBox.setText("Black Won!");
-    int ret = msgBox.exec();
+    msgBox.exec();
 }
 
 /******************************************************************************
@@ -143,7 +144,7 @@ void CentralWidget::historyPrev() {
  *
  ******************************************************************************/
 void CentralWidget::historyNext() {
-    if (mill->getHistoryIdx() < mill->getHistory().size() - 1 ||
+    if (mill->getHistoryIdx() < (int)mill->getHistory().size() - 1 ||
             (mill->getHistoryIdx() == -1 && mill->getHistory().size() > 0)) {
         mill->setHistoryIdx(mill->getHistoryIdx() + 1);
         mill->updateTable();

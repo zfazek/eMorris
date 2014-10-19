@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 #include "centralwidget.h"
@@ -15,4 +14,3 @@ class MainWindow : public QMainWindow {
         CentralWidget* centralWidget;
 };
 
-#endif // MAINWINDOW_H
