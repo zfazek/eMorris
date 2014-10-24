@@ -8,6 +8,7 @@
 #include "mill.h"
 #include "canvas.h"
 #include <thread>
+#include <unistd.h>
 
 using namespace std;
 
@@ -192,6 +193,10 @@ void CentralWidget::printHistory() {
  *
  ******************************************************************************/
 void CentralWidget::printTable() {
+
+    // Updates the canvas where the graphical table is
+    canvas->repaint();
+    canvas->repaint();
     if (mill->table->whiteToMove) {
         lineEditTurn->setText("White to move");
     } else {
@@ -200,8 +205,6 @@ void CentralWidget::printTable() {
     labelWhiteHand->setText(QString("White hand: %1").arg(mill->table->getWhiteHand()));
     labelBlackHand->setText(QString("Black hand: %1").arg(mill->table->getBlackHand()));
     printHistory();
-    // Updates the canvas where the graphical table is
-    canvas->update();
     listWidget->clear();
     vector<string> moves = mill->getAllMoves();
     vector<string> moves1;

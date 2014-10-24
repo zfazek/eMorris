@@ -4,9 +4,7 @@
 
 class QString;
 
-class Table {
-    public:
-
+struct Table {
         bool whiteToMove;
         Table();
         int getWhiteHand();
@@ -14,6 +12,5 @@ class Table {
         int table[24];
         int whiteHand;
         int blackHand;
-    private:
 };
 

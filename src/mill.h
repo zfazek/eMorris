@@ -38,12 +38,13 @@ class Mill {
         std::vector<std::string> getAllMoves();
         std::string convertMoveToCoord(std::string);
         int isEnd();
-        int getScore();
         int getNofNeighbors(int);
-        std::string getBestMove();
         std::string getBestMoveMCTS();
         void backupPosition();
+        void backupPosition(const Mill *mill);
         void restorePosition();
+        void restorePosition(Mill *mill);
+        int n;
 
     private:
         int mill[24][4];

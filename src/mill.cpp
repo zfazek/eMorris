@@ -5,6 +5,7 @@
 #include <iostream>
 #include <QString>
 #include <vector>
+#include <time.h>
 
 using namespace std;
 
@@ -144,16 +145,7 @@ Mill::Mill() {
     table = new Table();
     this->initRules();
     this->initTable(true);
-    /*
-       int a[] = {0,0,0,
-       2,0,0,
-       0,2,0,
-       0,1,0,  0,2,0,
-       0,0,0,
-       1,1,0,
-       0,0,0};
-       this->setPos(a, 6, 6, true);
-       */
+    n = 20;
 }
 
 Mill::~Mill() {
@@ -239,8 +231,7 @@ int Mill::moveCheck(int i, bool makeMove) {
             --table->whiteHand;
         }
         return 0;
-    }
-    if (! table->whiteToMove) {
+    } else {
         if (isMill(i, BLACK)) return -1;
         if (makeMove) {
             table->table[i] = BLACK;
@@ -519,10 +510,6 @@ int Mill::move(QString input, bool updateHistory) {
     int res = moveCheck(input, true);
     vector<string> moves;
     if (res == 0) {
-        if (table->whiteToMove)
-            moves = getAllMoves();
-        else
-            moves = getAllMoves();
         if (updateHistory) {
             int size = history.size() - historyIdx - 1;
             for (int i = 0; i < size; i++){
@@ -602,8 +589,9 @@ int Mill::isEnd() {
     if (table->blackHand > 0) return 0;
     if (getNofPiece(WHITE) < 3) return -1;
     if (getNofPiece(BLACK) < 3) return 1;
-    if (table->whiteToMove && getAllMoves().size() == 0) return -1;
-    if (! table->whiteToMove && getAllMoves().size() == 0) return 1;
+    int n_moves = getAllMoves().size();
+    if (table->whiteToMove && n_moves == 0) return -1;
+    if (! table->whiteToMove && n_moves == 0) return 1;
     return 0;
 }
 
@@ -617,23 +605,91 @@ int Mill::isEnd() {
 vector<string> Mill::getAllMoves() {
     vector<string> moves;
     char move[4];
-    for (int i = 0; i < 24; i++) {
-        if (moveCheck(i, false) == 0) {
-            sprintf(move, "%c", i + 'a');
-            moves.push_back(move);
-        }
-        for (int j = 0; j < 24; j++) {
-            if (moveCheck(i, j, false) == 0) {
-                sprintf(move, "%c%c", i + 'a', j + 'a');
-                moves.push_back(move);
-            }
-            for (int k = 0; k < 24; k++)
-                if (moveCheck(i, j, k, false) == 0) {
-                    sprintf(move, "%c%c%c", i + 'a', j + 'a', k + 'a');
+    if (table->whiteToMove) {
+        if (table->whiteHand > 0) {
+            for (int i = 0; i < 24; i++) {
+                if (moveCheck(i, false) == 0) {
+                    sprintf(move, "%c", i + 'a');
                     moves.push_back(move);
+                } else {
+                    for (int j = 0; j < 24; j++) {
+                        if (moveCheck(i, j, false) == 0) {
+                            sprintf(move, "%c%c", i + 'a', j + 'a');
+                            moves.push_back(move);
+                        }
+                    }
                 }
+            }
+        } else {
+            for (int i = 0; i < 24; i++) {
+                for (int j = 0; j < 24; j++) {
+                    if (moveCheck(i, j, false) == 0) {
+                        sprintf(move, "%c%c", i + 'a', j + 'a');
+                        moves.push_back(move);
+                    } else {
+                        for (int k = 0; k < 24; k++) {
+                            if (moveCheck(i, j, k, false) == 0) {
+                                sprintf(move, "%c%c%c", i + 'a', j + 'a', k + 'a');
+                                moves.push_back(move);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        if (table->blackHand > 0) {
+            for (int i = 0; i < 24; i++) {
+                if (moveCheck(i, false) == 0) {
+                    sprintf(move, "%c", i + 'a');
+                    moves.push_back(move);
+                } else {
+                    for (int j = 0; j < 24; j++) {
+                        if (moveCheck(i, j, false) == 0) {
+                            sprintf(move, "%c%c", i + 'a', j + 'a');
+                            moves.push_back(move);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 24; i++) {
+                for (int j = 0; j < 24; j++) {
+                    if (moveCheck(i, j, false) == 0) {
+                        sprintf(move, "%c%c", i + 'a', j + 'a');
+                        moves.push_back(move);
+                    } else {
+                        for (int k = 0; k < 24; k++) {
+                            if (moveCheck(i, j, k, false) == 0) {
+                                sprintf(move, "%c%c%c", i + 'a', j + 'a', k + 'a');
+                                moves.push_back(move);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
+    /*
+       for (int i = 0; i < 24; i++) {
+       if (moveCheck(i, false) == 0) {
+       sprintf(move, "%c", i + 'a');
+       moves.push_back(move);
+       }
+       for (int j = 0; j < 24; j++) {
+       if (moveCheck(i, j, false) == 0) {
+       sprintf(move, "%c%c", i + 'a', j + 'a');
+       moves.push_back(move);
+       }
+       for (int k = 0; k < 24; k++) {
+       if (moveCheck(i, j, k, false) == 0) {
+       sprintf(move, "%c%c%c", i + 'a', j + 'a', k + 'a');
+       moves.push_back(move);
+       }
+       }
+       }
+       }
+       */
     return moves;
 }
 
@@ -664,6 +720,7 @@ void Mill::updateTable() {
  ******************************************************************************/
 void Mill::printTable() {
     int *t = table->table;
+    printf("%s\n", table->whiteToMove ? "White to move" : "Black to move");
     printf("7 %d-----%d-----%d Black hand: %d\n", *t, *(t+1), *(t+2), table->blackHand);
     printf("  |     |     |\n");
     printf("6 | %d---%d---%d |\n", *(t+3), *(t+4), *(t+5));
@@ -694,17 +751,21 @@ string Mill::convertMoveToCoord(string move) {
         int x = coordHelper[i*3+2] + 'a';
         int y = 7 - coordHelper[i*3+1];
         sprintf(ret, "move %c%d", x, y);
-    }
-    if (size == 2) {
+    } else if (size == 2) {
         int i1 = move[0] - 'a';
         int x1 = coordHelper[i1*3+2] + 'a';
         int y1 = 7 - coordHelper[i1*3+1];
         int i2 = move[1] - 'a';
         int x2 = coordHelper[i2*3+2] + 'a';
         int y2 = 7 - coordHelper[i2*3+1];
-        sprintf(ret, "move %c%d%c%d", x1, y1, x2, y2);
-    }
-    if (size == 3) {
+        if (table->whiteToMove && table->getWhiteHand() > 0) {
+            sprintf(ret, "move %c%d,%c%d", x1, y1, x2, y2);
+        } else if (! table->whiteToMove && table->getBlackHand() > 0) {
+            sprintf(ret, "move %c%d,%c%d", x1, y1, x2, y2);
+        } else {
+            sprintf(ret, "move %c%d%c%d", x1, y1, x2, y2);
+        }
+    } else if (size == 3) {
         int i1 = move[0] - 'a';
         int x1 = coordHelper[i1*3+2] + 'a';
         int y1 = 7 - coordHelper[i1*3+1];
@@ -743,77 +804,18 @@ int Mill::getNofNeighbors(int color) {
     return n;
 }
 
-/******************************************************************************
- *
- * Returns the score of the position
- *
- ******************************************************************************/
-int Mill::getScore() {
-    int won = 1000;
-    int movesWeight = 3;
-    int neighborsWeight = 1;
-    int morrisWeight = 2;
-    int end = isEnd();
-    if (end == 1) return won;
-    if (end == -1) return -won;
-    int nofWhitePieces = getNofPiece(WHITE);
-    int nofBlackPieces = getNofPiece(BLACK);
-    bool whiteToMove = table->whiteToMove;
-    table->whiteToMove = true;
-    int nofWhiteMoves = getAllMoves().size();
-    table->whiteToMove = false;
-    int nofBlackMoves = getAllMoves().size();
-    table->whiteToMove = whiteToMove;
-    int nofWhiteNeighbors = getNofNeighbors(WHITE);
-    int nofBlackNeighbors = getNofNeighbors(BLACK);
-    return movesWeight * (nofWhiteMoves - nofBlackMoves) + 
-        morrisWeight * (nofWhitePieces - nofBlackPieces) +
-        neighborsWeight * (nofWhiteNeighbors - nofBlackNeighbors);
-}
-
-string Mill::getBestMove() {
-    vector<string> moves = getAllMoves();
-    string bestMove;
-    int bestScore;
-    if (table->whiteToMove) bestScore = -2000;
-    else bestScore = 2000;
-    bool whiteToMove;
-    int whiteHand;
-    int blackHand;
-    int t[24];
-    int score;
-    for(vector<string>::iterator it = moves.begin(); it != moves.end(); it++) {
-        whiteToMove = table->whiteToMove;
-        whiteHand = table->whiteHand;
-        blackHand = table->blackHand;
-        for (int i = 0; i < 24; i++) t[i] = table->table[i];
-        move(QString::fromStdString(convertMoveToCoord(*it)), false);
-        score = getScore();
-        table->whiteToMove = whiteToMove;
-        table->whiteHand = whiteHand;
-        table->blackHand = blackHand;
-        for (int i = 0; i < 24; i++) table->table[i] = t[i];
-        if (table->whiteToMove) {
-            if (score > bestScore) {
-                bestScore = score;
-                bestMove = *it;
-            }
-        }
-        if (! table->whiteToMove) {
-            if (score < bestScore) {
-                bestScore = score;
-                bestMove = *it;
-            }
-        }
-    }
-    return convertMoveToCoord(bestMove);
-}
-
 void Mill::backupPosition() {
     whiteToMove_backup = table->whiteToMove;
     whiteHand_backup = table->whiteHand;
     blackHand_backup = table->blackHand;
     for (int i = 0; i < 24; i++) t_backup[i] = table->table[i];
+}
+
+void Mill::backupPosition(const Mill *mill) {
+    whiteToMove_backup = mill->table->whiteToMove;
+    whiteHand_backup = mill->table->whiteHand;
+    blackHand_backup = mill->table->blackHand;
+    for (int i = 0; i < 24; i++) t_backup[i] = mill->table->table[i];
 }
 
 void Mill::restorePosition() {
@@ -823,20 +825,33 @@ void Mill::restorePosition() {
     for (int i = 0; i < 24; i++) table->table[i] = t_backup[i];
 }
 
+void Mill::restorePosition(Mill *mill) {
+    mill->table->whiteToMove = whiteToMove_backup;
+    mill->table->whiteHand = whiteHand_backup;
+    mill->table->blackHand = blackHand_backup;
+    for (int i = 0; i < 24; i++) mill->table->table[i] = t_backup[i];
+}
+
 string Mill::getBestMoveMCTS() {
     Move *move = new Move(this);
     string bestMove = "";
-    for (int i = 0; i < 500; i++) {
+    time_t start, end;
+    time(&start);
+    for (int i = 0; i < n; i++) {
+        //printf("%d.\n", i);
+        //printTable();
         backupPosition();
         move->selectAction();
         restorePosition();
     }
+    time(&end);
     bestMove = move->getBest()->currMove;
     for (Move *c : move->getChildren()) {
         c->print();
     }
     printf("best move: ");
     move->getBest()->print();
+    printf("elapsed time: %ld\n", end - start);
     delete move;
     return convertMoveToCoord(bestMove);
 }

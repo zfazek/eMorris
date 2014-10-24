@@ -10,6 +10,7 @@ class Move {
     private:
         static const int nActions = 10;
         static constexpr double epsilon = 1e-6;
+        static const int MAX_LONG = 100;
         std::vector<Move*> children;
         double nVisits = 0;
         double totValue = 0;
@@ -32,11 +33,12 @@ class Move {
     private:
 
         void expand();
-        Move *select();
+        Move *select(int depth);
         bool isLeaf();
-        int evaluate();
+        int evaluate(const Move *newNode);
         void updateStats(int value);
         double nextDouble();
+        std::vector<std::string> getTerminateMoves();
 
 };
 
