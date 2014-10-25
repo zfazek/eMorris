@@ -35,6 +35,9 @@ int coordHelper[72] = {
     23, 6, 6
 };
 
+Move::Move() {
+}
+
 Move::Move(int l, bool cap, int a) {
     length = l;
     capture = cap;
@@ -54,30 +57,30 @@ Move::~Move() {
 
 string Move::toString() {
     if (length == 1) {
-        char c = coordHelper[x * 3 + 1] + 'a';
-        return "move " + string(1, c) + to_string(7 - coordHelper[x * 3 + 2]);
+        char c = coordHelper[x * 3 + 2] + 'a';
+        return "move " + string(1, c) + to_string(7 - coordHelper[x * 3 + 1]);
     } else if (length == 2) {
-        char c1 = coordHelper[x * 3 + 1] + 'a';
-        char c2 = coordHelper[y * 3 + 1] + 'a';
+        char c1 = coordHelper[x * 3 + 2] + 'a';
+        char c2 = coordHelper[y * 3 + 2] + 'a';
         if (capture) {
-            return "move " + string(1, c1) + to_string(7 - coordHelper[x * 3 + 2]) + "," +
-                string(1, c2) + to_string(7 - coordHelper[y * 3 + 2]);
+            return "move " + string(1, c1) + to_string(7 - coordHelper[x * 3 + 1]) + "," +
+                string(1, c2) + to_string(7 - coordHelper[y * 3 + 1]);
         } else {
-            return "move " + string(1, c1) + to_string(7 - coordHelper[x * 3 + 2]) +
-                string(1, c2) + to_string(7 - coordHelper[y * 3 + 2]);
+            return "move " + string(1, c1) + to_string(7 - coordHelper[x * 3 + 1]) +
+                string(1, c2) + to_string(7 - coordHelper[y * 3 + 1]);
         }
     } else {
-        char c1 = coordHelper[x * 3 + 1] + 'a';
-        char c2 = coordHelper[y * 3 + 1] + 'a';
-        char c3 = coordHelper[z * 3 + 1] + 'a';
+        char c1 = coordHelper[x * 3 + 2] + 'a';
+        char c2 = coordHelper[y * 3 + 2] + 'a';
+        char c3 = coordHelper[z * 3 + 2] + 'a';
         if (capture) {
-            return "move " + string(1, c1) + to_string(7 - coordHelper[x * 3 + 2]) +
-                string(1, c2) + to_string(7 - coordHelper[y * 3 + 2]) + "," + 
-                string(1, c3) + to_string(7 - coordHelper[z * 3 + 2]);
+            return "move " + string(1, c1) + to_string(7 - coordHelper[x * 3 + 1]) +
+                string(1, c2) + to_string(7 - coordHelper[y * 3 + 1]) + "," + 
+                string(1, c3) + to_string(7 - coordHelper[z * 3 + 1]);
         } else {
-            return "move " + string(1, c1) + to_string(7 - coordHelper[x * 3 + 2]) +
-                string(1, c2) + to_string(7 - coordHelper[y * 3 + 2]) + 
-                string(1, c3) + to_string(7 - coordHelper[z * 3 + 2]);
+            return "move " + string(1, c1) + to_string(7 - coordHelper[x * 3 + 1]) +
+                string(1, c2) + to_string(7 - coordHelper[y * 3 + 1]) + 
+                string(1, c3) + to_string(7 - coordHelper[z * 3 + 1]);
         }
     }
 }

@@ -1,5 +1,6 @@
 #include "node.h"
 #include "mill.h"
+#include "move.h"
 #include "table.h"
 #include <vector>
 #include <math.h>
@@ -10,11 +11,8 @@
 
 using namespace std;
 
-int n = 0;
-
 Node::Node(Mill *m) {
     mill = m;
-    currMove = "";
 }
 
 Node::~Node() {
@@ -35,12 +33,11 @@ void Node::selectAction() {
     bool whiteToMove = mill->table->whiteToMove;
     while (!cur->isLeaf()) {
         cur = cur->select(visited.size());
-        mill->move(QString::fromStdString(mill->convertMoveToCoord(cur->currMove)), false);
-        //printf("cur->select(visited.size()): ");cur->print();
+        mill->move(cur->currMove, false);
         visited.push_back(cur);
     }
     Node *newNode;
-    int value = MAX_LONG * mill->isEnd();
+    int value = mill->isEnd();
     if (value == 0) {
         cur->expand();
         newNode = cur->select(visited.size());
@@ -55,18 +52,16 @@ void Node::selectAction() {
         }
         newNode = cur;
     }
-    //printf("currMove: %s: %d, visited.size(): %d\n", mill->convertMoveToCoord(newNode->currMove).c_str(), value, visited.size());
     for (Node *node : visited) {
         node->updateStats(value);
     }
-    //puts("");
 }
 
 Node *Node::select(int depth) {
     Node *selected = nullptr;
     double bestValue = -10e10;
     for (Node *c : children) {
-        if (depth == 1 && c->nVisits < (double)mill->n / children.size() / 2 ) {
+        if (depth == 1 && c->nVisits < (double)mill->n / children.size() / 3 ) {
             return c;
         }
         double uctValue =
@@ -84,22 +79,21 @@ Node *Node::select(int depth) {
 int Node::evaluate(const Node *newNode) {
     Mill m;
     m.backupPosition(mill);
-    mill->move(QString::fromStdString(mill->convertMoveToCoord(newNode->currMove)), false);
+    mill->move(newNode->currMove, false);
     int end = mill->isEnd();
     if (end != 0) {
         m.restorePosition(mill);
-        //printf("orig end: %d\n", end);
-        return MAX_LONG * end;
+        return end;
     }
     for (int i = 0; i < MAX_LONG; i++) {
-        vector<string> moves = getTerminateMoves();
-        mill->move(QString::fromStdString(mill->convertMoveToCoord(moves[rand() % moves.size()])), false);
+        vector<Move> moves = getTerminateMoves();
+        mill->move(moves[rand() % moves.size()], false);
 
         // -1: Black won, 0: no end, 1: White won
         int end = mill->isEnd();
         if (end != 0) {
             m.restorePosition(mill);
-            return (MAX_LONG - i) * end;
+            return end;
         }
     }
     m.restorePosition(mill);
@@ -112,7 +106,7 @@ int Node::arity() {
 
 void Node::print() {
     printf("%-15.15s %.0f/%.0f\n",
-            mill->convertMoveToCoord(currMove).c_str(),
+            currMove.toString().c_str(),
             totValue,
             nVisits);
 }
@@ -121,15 +115,13 @@ bool Node::isLeaf() {
     return children.size() == 0;
 }
 
-vector<string> Node::getTerminateMoves() {
+vector<Move> Node::getTerminateMoves() {
     Mill m;
-    vector<string> moves = mill->getAllMoves();
-    vector<string> terminate_moves;
-    for (string move : moves) {
+    vector<Move> moves = mill->getAllMoves();
+    vector<Move> terminate_moves;
+    for (Move move : moves) {
         m.backupPosition(mill);
-        //mill->printTable();
-        //printf("expand %s\n", mill->convertMoveToCoord(move).c_str());
-        mill->move(QString::fromStdString(mill->convertMoveToCoord(move)), false);
+        mill->move(move, false);
         if (mill->isEnd() != 0) {
             terminate_moves.push_back(move);
         }
@@ -144,11 +136,9 @@ vector<string> Node::getTerminateMoves() {
 
 void Node::expand() {
     Mill m;
-    vector<string> moves = getTerminateMoves();
+    vector<Move> moves = getTerminateMoves();
     for (size_t i = 0; i < moves.size(); i++) {
         Node *node= new Node(mill);
-        n++;
-        node->idx = n;
         node->currMove = moves[i];
         children.push_back(node);
     }
@@ -169,7 +159,6 @@ Node *Node::getBest() {
 void Node::updateStats(int value) {
     nVisits++;
     totValue += value;
-    //print();
 }
 
 double Node::nextDouble() {

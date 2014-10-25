@@ -9,7 +9,7 @@ using namespace std;
 
 void make_test_move_check(Mill *mill, QString move, int expected) {
     int result;
-    result = mill->moveCheck(move, true);
+    result = mill->moveCheck(mill->getMove(move), true);
     //printf("Test: %s -> %d\n", move.toStdString().c_str(), result);
     assert(result == expected);
 }
@@ -542,7 +542,6 @@ void test_best_move() {
         make_test_is_end(mill, 0);
         string bestMove = mill->getBestMoveMCTS();
         printf("best move: %s\n", bestMove.c_str());
-        mill->printTable();
         delete mill;
         assert(bestMove.substr(7, 2) == "a7");
     }
@@ -568,28 +567,42 @@ void test_move_class() {
         assert(move.toString() == "move a7");
     }
     {
+        Move move(1, false, 1);
+        assert(move.toString() == "move d7");
+    }
+    {
         Move move(1, false, 23);
         assert(move.toString() == "move g1");
     }
     {
         Move move(2, false, 22, 23);
-        assert(move.toString() == "move g4g1");
+        assert(move.toString() == "move d1g1");
     }
     {
         Move move(2, true, 22, 23);
-        assert(move.toString() == "move g4,g1");
+        assert(move.toString() == "move d1,g1");
     }
     {
         Move move(3, true, 22, 23, 0);
-        assert(move.toString() == "move g4g1,a7");
+        assert(move.toString() == "move d1g1,a7");
+    }
+}
+
+void test_getMove() {
+    {
+        Mill *mill = new Mill();
+        string bestMove = "move c3";
+        mill->move(mill->getMove(QString::fromStdString(bestMove)), true);
+        delete mill;
     }
 }
 
 int main() {
     test_moveXX();
     test_isEnd();
-    //test_best_move();
-    //test_speed();
     test_move_class();
+    test_best_move();
+    test_speed();
+    test_getMove();
     return 0;
 }

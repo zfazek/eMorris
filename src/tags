@@ -4,17 +4,18 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-BLACK	./mill.h	/^static const int BLACK = 2;$/;"	v
+BLACK	./table.h	/^static const int BLACK = 2;$/;"	v
 Canvas	./canvas.cpp	/^Canvas::Canvas(QWidget* parent) : QWidget(parent) {$/;"	f	class:Canvas
 Canvas	./canvas.h	/^class Canvas : public QWidget {$/;"	c
 CentralWidget	./centralwidget.cpp	/^CentralWidget::CentralWidget() {$/;"	f	class:CentralWidget
 CentralWidget	./centralwidget.h	/^class CentralWidget : public QWidget {$/;"	c
-EMPTY	./mill.h	/^static const int EMPTY = 0;$/;"	v
+EMPTY	./table.h	/^static const int EMPTY = 0;$/;"	v
 MAX_LONG	./node.h	/^        static const int MAX_LONG = 100;$/;"	m	class:Node
 MainWindow	./mainwindow.cpp	/^MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {$/;"	f	class:MainWindow
 MainWindow	./mainwindow.h	/^class MainWindow : public QMainWindow {$/;"	c
 Mill	./mill.cpp	/^Mill::Mill() {$/;"	f	class:Mill
 Mill	./mill.h	/^class Mill {$/;"	c
+Move	./move.cpp	/^Move::Move() {$/;"	f	class:Move
 Move	./move.cpp	/^Move::Move(int l, bool cap, int a) {$/;"	f	class:Move
 Move	./move.cpp	/^Move::Move(int l, bool cap, int a, int b) : Move(l, cap, a) {$/;"	f	class:Move
 Move	./move.cpp	/^Move::Move(int l, bool cap, int a, int b, int c) : Move(l, cap, a, b) {$/;"	f	class:Move
@@ -24,7 +25,7 @@ Node	./node.cpp	/^Node::Node(Mill *m) {$/;"	f	class:Node
 Node	./node.h	/^class Node {$/;"	c
 Table	./table.cpp	/^Table::Table() {$/;"	f	class:Table
 Table	./table.h	/^struct Table {$/;"	s
-WHITE	./mill.h	/^static const int WHITE = 1;$/;"	v
+WHITE	./table.h	/^static const int WHITE = 1;$/;"	v
 arity	./node.cpp	/^int Node::arity() {$/;"	f	class:Node
 backupPosition	./mill.cpp	/^void Mill::backupPosition() {$/;"	f	class:Mill
 backupPosition	./mill.cpp	/^void Mill::backupPosition(const Mill *mill) {$/;"	f	class:Mill
@@ -39,14 +40,12 @@ canvas	./centralwidget.h	/^        Canvas* canvas;$/;"	m	class:CentralWidget
 capture	./move.h	/^    bool capture;$/;"	m	struct:Move
 centralWidget	./mainwindow.h	/^        CentralWidget* centralWidget;$/;"	m	class:MainWindow
 children	./node.h	/^        std::vector<Node*> children;$/;"	m	class:Node
-convertMoveToCoord	./mill.cpp	/^string Mill::convertMoveToCoord(string move) {$/;"	f	class:Mill
-coordHelper	./move.h	/^int coordHelper[] = {$/;"	v
-currMove	./node.h	/^        std::string currMove;$/;"	m	class:Node
+coordHelper	./move.cpp	/^int coordHelper[72] = {$/;"	v
+currMove	./node.h	/^        Move currMove;$/;"	m	class:Node
 epsilon	./node.h	/^        static constexpr double epsilon = 1e-6;$/;"	m	class:Node
 evaluate	./node.cpp	/^int Node::evaluate(const Node *newNode) {$/;"	f	class:Node
 expand	./node.cpp	/^void Node::expand() {$/;"	f	class:Node
-getAllMoves	./mill.cpp	/^vector<string> Mill::getAllMoves() {$/;"	f	class:Mill
-getAllMovesNew	./mill.cpp	/^vector<Move> Mill::getAllMovesNew() {$/;"	f	class:Mill
+getAllMoves	./mill.cpp	/^vector<Move> Mill::getAllMoves() {$/;"	f	class:Mill
 getBest	./node.cpp	/^Node *Node::getBest() {$/;"	f	class:Node
 getBestMoveMCTS	./mill.cpp	/^string Mill::getBestMoveMCTS() {$/;"	f	class:Mill
 getBlackHand	./table.cpp	/^int Table::getBlackHand() {$/;"	f	class:Table
@@ -57,8 +56,9 @@ getField	./mill.cpp	/^int Mill::getField(int i) {$/;"	f	class:Mill
 getHistory	./mill.cpp	/^vector<QString> Mill::getHistory() {$/;"	f	class:Mill
 getHistoryIdx	./mill.cpp	/^int Mill::getHistoryIdx() {$/;"	f	class:Mill
 getIdx	./mill.cpp	/^int Mill::getIdx(int x, int y) {$/;"	f	class:Mill
+getMove	./mill.cpp	/^Move Mill::getMove(QString input) {$/;"	f	class:Mill
 getNofPiece	./mill.cpp	/^int Mill::getNofPiece(int color) {$/;"	f	class:Mill
-getTerminateMoves	./node.cpp	/^vector<string> Node::getTerminateMoves() {$/;"	f	class:Node
+getTerminateMoves	./node.cpp	/^vector<Move> Node::getTerminateMoves() {$/;"	f	class:Node
 getWhiteHand	./table.cpp	/^int Table::getWhiteHand() {$/;"	f	class:Table
 grid	./centralwidget.h	/^        QGridLayout* grid;$/;"	m	class:CentralWidget
 hasSoloMorris	./mill.cpp	/^bool Mill::hasSoloMorris(int color) {$/;"	f	class:Mill
@@ -69,7 +69,6 @@ hboxStart	./centralwidget.h	/^        QHBoxLayout* hboxStart;$/;"	m	class:Centra
 hboxWhiteHand	./centralwidget.h	/^        QHBoxLayout* hboxWhiteHand;$/;"	m	class:CentralWidget
 history	./mill.h	/^        std::vector<QString> history;$/;"	m	class:Mill
 historyIdx	./mill.h	/^        int historyIdx;$/;"	m	class:Mill
-historyNew	./mill.h	/^        std::vector<Move> historyNew;$/;"	m	class:Mill
 historyNext	./centralwidget.cpp	/^void CentralWidget::historyNext() {$/;"	f	class:CentralWidget
 historyPrev	./centralwidget.cpp	/^void CentralWidget::historyPrev() {$/;"	f	class:CentralWidget
 historyToEnd	./centralwidget.cpp	/^void CentralWidget::historyToEnd() {$/;"	f	class:CentralWidget
@@ -78,6 +77,7 @@ idx	./node.h	/^        int idx = 0;$/;"	m	class:Node
 initGui	./centralwidget.cpp	/^void CentralWidget::initGui() {$/;"	f	class:CentralWidget
 initRules	./mill.cpp	/^void Mill::initRules() {$/;"	f	class:Mill
 initTable	./mill.cpp	/^void Mill::initTable(bool historyClear) {$/;"	f	class:Mill
+initTable	./table.cpp	/^void Table::initTable() {$/;"	f	class:Table
 isEnd	./mill.cpp	/^int Mill::isEnd() {$/;"	f	class:Mill
 isLeaf	./node.cpp	/^bool Node::isLeaf() {$/;"	f	class:Node
 isMill	./mill.cpp	/^bool Mill::isMill(int idx, int color) {$/;"	f	class:Mill
@@ -105,14 +105,11 @@ mill	./node.h	/^        Mill *mill;$/;"	m	class:Node
 millHelper	./mill.cpp	/^int millHelper[] = {$/;"	v
 millNeighbors	./mill.cpp	/^int millNeighbors[] = {$/;"	v
 move	./mill.cpp	/^int Mill::move(Move move, bool updateHistory) {$/;"	f	class:Mill
-move	./mill.cpp	/^int Mill::move(QString input, bool updateHistory) {$/;"	f	class:Mill
 moveCheck	./mill.cpp	/^int Mill::moveCheck(Move move, bool updateHistory) {$/;"	f	class:Mill
-moveCheck	./mill.cpp	/^int Mill::moveCheck(QString input, bool makeMove) {$/;"	f	class:Mill
 moveCheck	./mill.cpp	/^int Mill::moveCheck(int i, bool makeMove) {$/;"	f	class:Mill
 moveCheck	./mill.cpp	/^int Mill::moveCheck(int i1, int i2, bool makeMove) {$/;"	f	class:Mill
 moveCheck	./mill.cpp	/^int Mill::moveCheck(int i1, int i2, int i3, bool makeMove) {$/;"	f	class:Mill
 n	./mill.h	/^        int n;$/;"	m	class:Mill
-n	./node.cpp	/^int n = 0;$/;"	v
 nActions	./node.h	/^        static const int nActions = 10;$/;"	m	class:Node
 nVisits	./node.h	/^        double nVisits = 0;$/;"	m	class:Node
 nextDouble	./node.cpp	/^double Node::nextDouble() {$/;"	f	class:Node
@@ -121,7 +118,7 @@ print	./node.cpp	/^void Node::print() {$/;"	f	class:Node
 printGameOver	./centralwidget.cpp	/^void CentralWidget::printGameOver(int isEnd) {$/;"	f	class:CentralWidget
 printHistory	./centralwidget.cpp	/^void CentralWidget::printHistory() {$/;"	f	class:CentralWidget
 printTable	./centralwidget.cpp	/^void CentralWidget::printTable() {$/;"	f	class:CentralWidget
-printTable	./mill.cpp	/^void Mill::printTable() {$/;"	f	class:Mill
+printTable	./table.cpp	/^void Table::printTable() {$/;"	f	class:Table
 restorePosition	./mill.cpp	/^void Mill::restorePosition() {$/;"	f	class:Mill
 restorePosition	./mill.cpp	/^void Mill::restorePosition(Mill *mill) {$/;"	f	class:Mill
 select	./node.cpp	/^Node *Node::select(int depth) {$/;"	f	class:Node
@@ -135,6 +132,7 @@ table	./table.h	/^        int table[24];$/;"	m	struct:Table
 test_best_move	./test.cpp	/^void test_best_move() {$/;"	f
 test_isEnd	./test.cpp	/^void test_isEnd() {$/;"	f
 test_moveXX	./test.cpp	/^void test_moveXX() {$/;"	f
+test_move_class	./test.cpp	/^void test_move_class() {$/;"	f
 test_speed	./test.cpp	/^void test_speed() {$/;"	f
 textEditHistory	./centralwidget.h	/^        QTextEdit* textEditHistory;$/;"	m	class:CentralWidget
 toString	./move.cpp	/^string Move::toString() {$/;"	f	class:Move

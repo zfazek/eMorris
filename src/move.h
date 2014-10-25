@@ -11,6 +11,7 @@ struct Move {
     int y;
     int z;
 
+    Move();
     Move(int length, bool capture, int x);
     Move(int length, bool capture, int x, int y);
     Move(int length, bool capture, int x, int y, int z);

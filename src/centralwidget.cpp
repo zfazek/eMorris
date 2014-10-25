@@ -6,6 +6,7 @@
 #include "centralwidget.h"
 #include "table.h"
 #include "mill.h"
+#include "move.h"
 #include "canvas.h"
 #include <thread>
 #include <unistd.h>
@@ -64,6 +65,8 @@ void CentralWidget::initGui() {
     listWidget = new QListWidget(this);
     this->connect(listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
             this, SLOT(MoveDoubleClicked(QListWidgetItem*)));
+    //this->connect(listWidget, SIGNAL(itemActivated(QListWidgetItem*)),
+    //        this, SLOT(MoveDoubleClicked(QListWidgetItem*)));
     grid->addWidget(listWidget, 1, 9, -1, 1);
     buttonMove = new QPushButton("make move");
     this->connect(buttonMove, SIGNAL(clicked()),
@@ -73,7 +76,7 @@ void CentralWidget::initGui() {
 }
 
 void CentralWidget::MoveDoubleClicked(QListWidgetItem *item) {
-    mill->move(item->text(), true);
+    mill->move(mill->getMove(item->text()), true);
     printTable();
     int isEnd = mill->isEnd();
     printGameOver(isEnd);
@@ -85,7 +88,7 @@ void CentralWidget::MoveDoubleClicked(QListWidgetItem *item) {
 
 void CentralWidget::makeMove() {
     string bestMove = mill->getBestMoveMCTS();
-    mill->move(QString::fromStdString(bestMove), true);
+    mill->move(mill->getMove(QString::fromStdString(bestMove)), true);
     printTable();
     int isEnd = mill->isEnd();
     printGameOver(isEnd);
@@ -193,10 +196,6 @@ void CentralWidget::printHistory() {
  *
  ******************************************************************************/
 void CentralWidget::printTable() {
-
-    // Updates the canvas where the graphical table is
-    canvas->repaint();
-    canvas->repaint();
     if (mill->table->whiteToMove) {
         lineEditTurn->setText("White to move");
     } else {
@@ -206,16 +205,17 @@ void CentralWidget::printTable() {
     labelBlackHand->setText(QString("Black hand: %1").arg(mill->table->getBlackHand()));
     printHistory();
     listWidget->clear();
-    vector<string> moves = mill->getAllMoves();
+    vector<Move> moves = mill->getAllMoves();
     vector<string> moves1;
-    for(vector<string>::iterator it = moves.begin(); it != moves.end(); it++) {
-        moves1.push_back(mill->convertMoveToCoord(*it));
+    for(vector<Move>::iterator it = moves.begin(); it != moves.end(); it++) {
+        moves1.push_back((*it).toString());
     }
     sort(moves1.begin(), moves1.end());
     for(vector<string>::iterator it = moves1.begin(); it != moves1.end(); it++) {
         new QListWidgetItem(QString::fromStdString(*it), listWidget);
     }
 
-    //printf("score: %d\n", mill->getScore());
-
+    // Updates the canvas where the graphical table is
+    canvas->repaint();
+    canvas->repaint();
 }

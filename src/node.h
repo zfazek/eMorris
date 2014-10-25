@@ -1,9 +1,10 @@
 #pragma once
 
 #include <vector>
-#include <string>
+#include "move.h"
 
 class Mill;
+//class Move;
 
 class Node {
 
@@ -28,7 +29,7 @@ class Node {
         Node *getBest();
         void print();
 
-        std::string currMove;
+        Move currMove;
 
     private:
 
@@ -38,7 +39,7 @@ class Node {
         int evaluate(const Node *newNode);
         void updateStats(int value);
         double nextDouble();
-        std::vector<std::string> getTerminateMoves();
+        std::vector<Move> getTerminateMoves();
 
 };
 
