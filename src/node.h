@@ -5,13 +5,13 @@
 
 class Mill;
 
-class Move {
+class Node {
 
     private:
         static const int nActions = 10;
         static constexpr double epsilon = 1e-6;
         static const int MAX_LONG = 100;
-        std::vector<Move*> children;
+        std::vector<Node*> children;
         double nVisits = 0;
         double totValue = 0;
         int idx = 0;
@@ -20,12 +20,12 @@ class Move {
 
     public:
 
-        Move(Mill *mill);
-        ~Move();
-        std::vector<Move*> getChildren();
+        Node(Mill *mill);
+        ~Node();
+        std::vector<Node*> getChildren();
         void selectAction();
         int arity();
-        Move *getBest();
+        Node *getBest();
         void print();
 
         std::string currMove;
@@ -33,9 +33,9 @@ class Move {
     private:
 
         void expand();
-        Move *select(int depth);
+        Node *select(int depth);
         bool isLeaf();
-        int evaluate(const Move *newNode);
+        int evaluate(const Node *newNode);
         void updateStats(int value);
         double nextDouble();
         std::vector<std::string> getTerminateMoves();

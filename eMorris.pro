@@ -17,14 +17,14 @@ SOURCES += src/main.cpp\
     src/centralwidget.cpp \
     src/table.cpp \
     src/mill.cpp \
-    src/move.cpp \
+    src/node.cpp \
     src/canvas.cpp
 
 HEADERS  += src/mainwindow.h \
     src/centralwidget.h \
     src/table.h \
     src/mill.h \
-    src/move.h \
+    src/node.h \
     src/canvas.h
 
 FORMS    +=

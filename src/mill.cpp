@@ -1,5 +1,5 @@
 #include "mill.h"
-#include "move.h"
+#include "node.h"
 #include "table.h"
 #include <stdio.h>
 #include <iostream>
@@ -221,7 +221,7 @@ vector<QString> Mill::getHistory() {
  ******************************************************************************/
 int Mill::moveCheck(int i, bool makeMove) {
     if (table->whiteToMove and table->whiteHand == 0) return -1;
-    if (!table->whiteToMove and table->blackHand == 0) return -1;
+    if (! table->whiteToMove and table->blackHand == 0) return -1;
     if (table->table[i] != EMPTY) return -1;
     if (table->whiteToMove) {
         if (isMill(i, WHITE)) return -1;
@@ -382,7 +382,7 @@ int Mill::moveCheck(int i1, int i2, int i3, bool makeMove) {
         return 0;
     }
 
-    if (!table->whiteToMove && table->blackHand == 0) {
+    if (! table->whiteToMove && table->blackHand == 0) {
         if (table->table[i1] != BLACK) return -1;
         if (table->table[i2] != EMPTY) return -1;
         if (nofBlack > 3 && ! isNeighbor(i1, i2)) return -1;
@@ -488,8 +488,8 @@ int Mill::moveCheck(QString input, bool makeMove) {
 /******************************************************************************
  *
  * Checks if the user has any man in no mill.
- * I needs to check that picking from mill is legal or not.
- * I hasSoloMorris(color) is false it is allowed to pick from mill.
+ * It needs to check that picking from mill is legal or not.
+ * If hasSoloMorris(color) is false it is allowed to pick from mill.
  *
  ******************************************************************************/
 bool Mill::hasSoloMorris(int color) {
@@ -833,7 +833,7 @@ void Mill::restorePosition(Mill *mill) {
 }
 
 string Mill::getBestMoveMCTS() {
-    Move *move = new Move(this);
+    Node *move = new Node(this);
     string bestMove = "";
     time_t start, end;
     time(&start);
@@ -846,7 +846,7 @@ string Mill::getBestMoveMCTS() {
     }
     time(&end);
     bestMove = move->getBest()->currMove;
-    for (Move *c : move->getChildren()) {
+    for (Node *c : move->getChildren()) {
         c->print();
     }
     printf("best move: ");
