@@ -29,8 +29,8 @@ class Mill {
         void updateTable();
         void setPos(int* table, int whiteHand, int blackHand, bool whiteToMove);
         int moveCheck(int x, bool makeMove);
-        int moveCheck(int x, int y, bool makeMove);
-        int moveCheck(int x, int y, int z, bool makeMove);
+        int moveCheck(int x, int y, bool makeMove, int n_white, int n_black);
+        int moveCheck(int x, int y, int z, bool makeMove, int n_white, int n_black);
         std::vector<Move> getAllMoves();
         int isEnd();
         std::string getBestMoveMCTS();

@@ -601,8 +601,8 @@ int main() {
     test_moveXX();
     test_isEnd();
     test_move_class();
+    test_getMove();
     test_best_move();
     test_speed();
-    test_getMove();
     return 0;
 }

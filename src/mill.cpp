@@ -81,7 +81,7 @@ Mill::Mill() {
     table = new Table();
     this->initRules();
     this->initTable(true);
-    n = 100;
+    n = 500;
 }
 
 Mill::~Mill() {
@@ -146,9 +146,13 @@ int Mill::moveCheck(Move move, bool updateHistory) {
     if (move.length == 1) {
         return moveCheck(move.x, updateHistory);
     } else if (move.length == 2) {
-        return moveCheck(move.x, move.y, updateHistory);
+        int n_white = getNofPiece(WHITE);
+        int n_black = getNofPiece(BLACK);
+        return moveCheck(move.x, move.y, updateHistory, n_white, n_black);
     } else {
-        return moveCheck(move.x, move.y, move.z, updateHistory);
+        int n_white = getNofPiece(WHITE);
+        int n_black = getNofPiece(BLACK);
+        return moveCheck(move.x, move.y, move.z, updateHistory, n_white, n_black);
     }
 }
 
@@ -192,15 +196,13 @@ int Mill::moveCheck(int i, bool makeMove) {
  * Otherwise it only checks if it is legal or not.
  *
  ******************************************************************************/
-int Mill::moveCheck(int i1, int i2, bool makeMove) {
-    int nofWhite = getNofPiece(WHITE);
-    int nofBlack = getNofPiece(BLACK);
+int Mill::moveCheck(int i1, int i2, bool makeMove, int n_white, int n_black) {
 
     /* Simple WHITE move */
     if (table->whiteToMove && table->whiteHand == 0) {
         if (table->table[i1] != WHITE) return -1;
         if (table->table[i2] != EMPTY) return -1;
-        if (nofWhite > 3 && ! isNeighbor(i1, i2)) return -1;
+        if (n_white > 3 && ! isNeighbor(i1, i2)) return -1;
         table->table[i1] = EMPTY;
         table->table[i2] = WHITE;
 
@@ -223,7 +225,7 @@ int Mill::moveCheck(int i1, int i2, bool makeMove) {
     if (!table->whiteToMove && table->blackHand == 0) {
         if (table->table[i1] != BLACK) return -1;
         if (table->table[i2] != EMPTY) return -1;
-        if (nofBlack > 3 && ! isNeighbor(i1, i2)) return -1;
+        if (n_black > 3 && ! isNeighbor(i1, i2)) return -1;
         table->table[i1] = EMPTY;
         table->table[i2] = BLACK;
 
@@ -245,8 +247,8 @@ int Mill::moveCheck(int i1, int i2, bool makeMove) {
     /* Mill from hand */
     if (table->whiteToMove && table->whiteHand > 0) {
         if (table->table[i1] != EMPTY) return -1;
+        if (table->table[i2] != BLACK) return -1;
         if (isMill(i1, WHITE)) {
-            if (table->table[i2] != BLACK) return -1;
 
             /* You can not pick from mill */
             if (isMill(i2, BLACK) && hasSoloMorris(BLACK)) return -1;
@@ -261,8 +263,8 @@ int Mill::moveCheck(int i1, int i2, bool makeMove) {
     }
     if (!table->whiteToMove && table->blackHand > 0) {
         if (table->table[i1] != EMPTY) return -1;
+        if (table->table[i2] != WHITE) return -1;
         if (isMill(i1, BLACK)) {
-            if (table->table[i2] != WHITE) return -1;
 
             /* You can not pick from mill */
             if (isMill(i2, WHITE) && hasSoloMorris(WHITE)) return -1;
@@ -286,24 +288,15 @@ int Mill::moveCheck(int i1, int i2, bool makeMove) {
  * Otherwise it only checks if it is legal or not.
  *
  ******************************************************************************/
-int Mill::moveCheck(int i1, int i2, int i3, bool makeMove) {
-    if (table->whiteToMove && table->whiteHand > 0) return -1;
-    if (!table->whiteToMove && table->blackHand > 0) return -1;
-    int nofWhite = getNofPiece(WHITE);
-    int nofBlack = getNofPiece(BLACK);
-
+int Mill::moveCheck(int i1, int i2, int i3, bool makeMove, int n_white, int n_black) {
     if (table->whiteToMove && table->whiteHand == 0) {
         if (table->table[i1] != WHITE) return -1;
         if (table->table[i2] != EMPTY) return -1;
-        if (nofWhite > 3 && ! isNeighbor(i1, i2)) return -1;
+        if (table->table[i3] != BLACK) return -1;
+        if (n_white > 3 && ! isNeighbor(i1, i2)) return -1;
         table->table[i1] = EMPTY;
         table->table[i2] = WHITE;
         if (!isMill(i2, WHITE)) {
-            table->table[i1] = WHITE;
-            table->table[i2] = EMPTY;
-            return -1;
-        }
-        if (table->table[i3] != BLACK) {
             table->table[i1] = WHITE;
             table->table[i2] = EMPTY;
             return -1;
@@ -326,15 +319,11 @@ int Mill::moveCheck(int i1, int i2, int i3, bool makeMove) {
     if (! table->whiteToMove && table->blackHand == 0) {
         if (table->table[i1] != BLACK) return -1;
         if (table->table[i2] != EMPTY) return -1;
-        if (nofBlack > 3 && ! isNeighbor(i1, i2)) return -1;
+        if (table->table[i3] != WHITE) return -1;
+        if (n_black > 3 && ! isNeighbor(i1, i2)) return -1;
         table->table[i1] = EMPTY;
         table->table[i2] = BLACK;
         if (!isMill(i2, BLACK)) {
-            table->table[i1] = BLACK;
-            table->table[i2] = EMPTY;
-            return -1;
-        }
-        if (table->table[i3] != WHITE) {
             table->table[i1] = BLACK;
             table->table[i2] = EMPTY;
             return -1;
@@ -545,6 +534,8 @@ int Mill::isEnd() {
  ******************************************************************************/
 vector<Move> Mill::getAllMoves() {
     vector<Move> moves;
+    int n_white = getNofPiece(WHITE);
+    int n_black = getNofPiece(BLACK);
     if (table->whiteToMove) {
         if (table->whiteHand > 0) {
             for (int i = 0; i < 24; i++) {
@@ -553,7 +544,7 @@ vector<Move> Mill::getAllMoves() {
                     moves.push_back(move);
                 } else {
                     for (int j = 0; j < 24; j++) {
-                        if (moveCheck(i, j, false) == 0) {
+                        if (moveCheck(i, j, false, n_white, n_black) == 0) {
                             Move move(2, true, i, j);
                             moves.push_back(move);
                         }
@@ -563,12 +554,12 @@ vector<Move> Mill::getAllMoves() {
         } else {
             for (int i = 0; i < 24; i++) {
                 for (int j = 0; j < 24; j++) {
-                    if (moveCheck(i, j, false) == 0) {
+                    if (moveCheck(i, j, false, n_white, n_black) == 0) {
                         Move move(2, false, i, j);
                         moves.push_back(move);
                     } else {
                         for (int k = 0; k < 24; k++) {
-                            if (moveCheck(i, j, k, false) == 0) {
+                            if (moveCheck(i, j, k, false, n_white, n_black) == 0) {
                                 Move move(3, true, i, j, k);
                                 moves.push_back(move);
                             }
@@ -585,7 +576,7 @@ vector<Move> Mill::getAllMoves() {
                     moves.push_back(move);
                 } else {
                     for (int j = 0; j < 24; j++) {
-                        if (moveCheck(i, j, false) == 0) {
+                        if (moveCheck(i, j, false, n_white, n_black) == 0) {
                             Move move(2, true, i, j);
                             moves.push_back(move);
                         }
@@ -595,12 +586,12 @@ vector<Move> Mill::getAllMoves() {
         } else {
             for (int i = 0; i < 24; i++) {
                 for (int j = 0; j < 24; j++) {
-                    if (moveCheck(i, j, false) == 0) {
+                    if (moveCheck(i, j, false, n_white, n_black) == 0) {
                         Move move(2, false, i, j);
                         moves.push_back(move);
                     } else {
                         for (int k = 0; k < 24; k++) {
-                            if (moveCheck(i, j, k, false) == 0) {
+                            if (moveCheck(i, j, k, false, n_white, n_black) == 0) {
                                 Move move(3, true, i, j, k);
                                 moves.push_back(move);
                             }

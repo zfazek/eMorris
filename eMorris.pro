@@ -9,8 +9,6 @@ QT       += core gui
 TARGET = eMorris
 TEMPLATE = app
 QMAKE_CXXFLAGS += -g -std=c++11
-LIBS += -pthread
-
 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
