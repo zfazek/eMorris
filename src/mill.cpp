@@ -1,5 +1,6 @@
 #include "mill.h"
 #include "node.h"
+#include "move.h"
 #include "table.h"
 #include <stdio.h>
 #include <iostream>
@@ -9,39 +10,6 @@
 
 using namespace std;
 
-
-/******************************************************************************
- *
- * idx of field, y, x coordinates
- * 0, 0 is the top left corner
- *
- ******************************************************************************/
-int coordHelper[] = {
-    0, 0, 0,
-    1, 0, 3,
-    2, 0, 6,
-    3, 1, 1,
-    4, 1, 3,
-    5, 1, 5,
-    6, 2, 2,
-    7, 2, 3,
-    8, 2, 4,
-    9, 3, 0,
-    10, 3, 1,
-    11, 3, 2,
-    12, 3, 4,
-    13, 3, 5,
-    14, 3, 6,
-    15, 4, 2,
-    16, 4, 3,
-    17, 4, 4,
-    18, 5, 1,
-    19, 5, 3,
-    20, 5, 5,
-    21, 6, 0,
-    22, 6, 3,
-    23, 6, 6
-};
 
 /******************************************************************************
  *
@@ -107,38 +75,6 @@ int millNeighbors[] = {
     21, 9, 9, 22, 22,
     22, 19, 21, 23, 23,
     23, 14, 14, 22, 22
-};
-
-/******************************************************************************
- *
- * idx of field, number of neighbors
- *
- ******************************************************************************/
-int nofNeighbors[] = {
-    0, 2,
-    1, 3,
-    2, 2,
-    3, 2,
-    4, 4,
-    5, 2,
-    6, 2,
-    7, 3,
-    8, 2,
-    9, 3,
-    10, 4,
-    11, 3,
-    12, 3,
-    13, 4,
-    14, 3,
-    15, 2,
-    16, 3,
-    17, 2,
-    18, 2,
-    19, 4,
-    20, 2,
-    21, 2,
-    22, 3,
-    23, 2
 };
 
 Mill::Mill() {
@@ -209,6 +145,16 @@ int Mill::getField(int i) {
 
 vector<QString> Mill::getHistory() {
     return history;
+}
+
+int Mill::moveCheck(Move move, bool updateHistory) {
+    if (move.length == 1) {
+        return moveCheck(move.x, updateHistory);
+    } else if (move.length == 2) {
+        return moveCheck(move.x, move.y, updateHistory);
+    } else {
+        return moveCheck(move.x, move.y, move.z, updateHistory);
+    }
 }
 
 /******************************************************************************
@@ -508,7 +454,6 @@ bool Mill::hasSoloMorris(int color) {
  ******************************************************************************/
 int Mill::move(QString input, bool updateHistory) {
     int res = moveCheck(input, true);
-    vector<string> moves;
     if (res == 0) {
         if (updateHistory) {
             int size = history.size() - historyIdx - 1;
@@ -521,6 +466,24 @@ int Mill::move(QString input, bool updateHistory) {
         return 0;
     } else {
         cout << "Invalid move: " << input.toStdString() << endl;
+        return -1;
+    }
+}
+
+int Mill::move(Move move, bool updateHistory) {
+    int res = moveCheck(move, true);
+    if (res == 0) {
+        if (updateHistory) {
+            int size = history.size() - historyIdx - 1;
+            for (int i = 0; i < size; i++){
+                historyNew.pop_back();
+            }
+            historyNew.push_back(move);
+            historyIdx = history.size() - 1;
+        }
+        return 0;
+    } else {
+        cout << "Invalid move: " << move.toString() << endl;
         return -1;
     }
 }
@@ -589,7 +552,7 @@ int Mill::isEnd() {
     if (table->blackHand > 0) return 0;
     if (getNofPiece(WHITE) < 3) return -1;
     if (getNofPiece(BLACK) < 3) return 1;
-    int n_moves = getAllMoves().size();
+    int n_moves = getAllMovesNew().size();
     if (table->whiteToMove && n_moves == 0) return -1;
     if (! table->whiteToMove && n_moves == 0) return 1;
     return 0;
@@ -693,6 +656,83 @@ vector<string> Mill::getAllMoves() {
     return moves;
 }
 
+/******************************************************************************
+ *
+ * Returns all the legal moves.
+ * It uses brute force to generate all the moves and checks if it is legal
+ * one by one.
+ *
+ ******************************************************************************/
+vector<Move> Mill::getAllMovesNew() {
+    vector<Move> moves;
+    if (table->whiteToMove) {
+        if (table->whiteHand > 0) {
+            for (int i = 0; i < 24; i++) {
+                if (moveCheck(i, false) == 0) {
+                    Move move(1, false, i);
+                    moves.push_back(move);
+                } else {
+                    for (int j = 0; j < 24; j++) {
+                        if (moveCheck(i, j, false) == 0) {
+                            Move move(2, true, i, j);
+                            moves.push_back(move);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 24; i++) {
+                for (int j = 0; j < 24; j++) {
+                    if (moveCheck(i, j, false) == 0) {
+                        Move move(2, false, i, j);
+                        moves.push_back(move);
+                    } else {
+                        for (int k = 0; k < 24; k++) {
+                            if (moveCheck(i, j, k, false) == 0) {
+                                Move move(3, true, i, j, k);
+                                moves.push_back(move);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        if (table->blackHand > 0) {
+            for (int i = 0; i < 24; i++) {
+                if (moveCheck(i, false) == 0) {
+                    Move move(1, false, i);
+                    moves.push_back(move);
+                } else {
+                    for (int j = 0; j < 24; j++) {
+                        if (moveCheck(i, j, false) == 0) {
+                            Move move(2, true, i, j);
+                            moves.push_back(move);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 24; i++) {
+                for (int j = 0; j < 24; j++) {
+                    if (moveCheck(i, j, false) == 0) {
+                        Move move(2, false, i, j);
+                        moves.push_back(move);
+                    } else {
+                        for (int k = 0; k < 24; k++) {
+                            if (moveCheck(i, j, k, false) == 0) {
+                                Move move(3, true, i, j, k);
+                                moves.push_back(move);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return moves;
+}
+
 int Mill::getHistoryIdx() {
     return historyIdx;
 }
@@ -792,16 +832,6 @@ void Mill::setPos(int *t, int whiteHand, int blackHand, bool whiteToMove) {
     table->whiteHand = whiteHand;
     table->blackHand = blackHand;
     table->whiteToMove = whiteToMove;
-}
-
-int Mill::getNofNeighbors(int color) {
-    int n = 0;
-    for (int i = 0; i < 24; i++) {
-        if (table->table[i] == color) {
-            n += nofNeighbors[i * 2 + 1];
-        }
-    }
-    return n;
 }
 
 void Mill::backupPosition() {

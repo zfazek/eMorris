@@ -1,4 +1,5 @@
 #include "mill.h"
+#include "move.h"
 #include <assert.h>
 #include <stdio.h>
 #include <QString>
@@ -561,10 +562,34 @@ void test_speed() {
     }
 }
 
+void test_move_class() {
+    {
+        Move move(1, false, 0);
+        assert(move.toString() == "move a7");
+    }
+    {
+        Move move(1, false, 23);
+        assert(move.toString() == "move g1");
+    }
+    {
+        Move move(2, false, 22, 23);
+        assert(move.toString() == "move g4g1");
+    }
+    {
+        Move move(2, true, 22, 23);
+        assert(move.toString() == "move g4,g1");
+    }
+    {
+        Move move(3, true, 22, 23, 0);
+        assert(move.toString() == "move g4g1,a7");
+    }
+}
+
 int main() {
     test_moveXX();
     test_isEnd();
     //test_best_move();
-    test_speed();
+    //test_speed();
+    test_move_class();
     return 0;
 }

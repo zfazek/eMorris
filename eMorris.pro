@@ -18,6 +18,7 @@ SOURCES += src/main.cpp\
     src/table.cpp \
     src/mill.cpp \
     src/node.cpp \
+    src/move.cpp \
     src/canvas.cpp
 
 HEADERS  += src/mainwindow.h \
@@ -25,6 +26,7 @@ HEADERS  += src/mainwindow.h \
     src/table.h \
     src/mill.h \
     src/node.h \
+    src/move.h \
     src/canvas.h
 
 FORMS    +=

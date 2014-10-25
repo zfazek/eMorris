@@ -146,11 +146,11 @@ void Node::expand() {
     Mill m;
     vector<string> moves = getTerminateMoves();
     for (size_t i = 0; i < moves.size(); i++) {
-        Node *move = new Node(mill);
+        Node *node= new Node(mill);
         n++;
-        move->idx = n;
-        move->currMove = moves[i];
-        children.push_back(move);
+        node->idx = n;
+        node->currMove = moves[i];
+        children.push_back(node);
     }
 }
 
