@@ -10,6 +10,7 @@ static const int WHITE = 1;
 static const int BLACK = 2;
 
 struct Table {
+
         bool whiteToMove;
         int table[24];
         int whiteHand;
@@ -17,6 +18,8 @@ struct Table {
         int mill[24][4];
 
         Table();
+        Table(const Table *table);
+        ~Table();
         int getWhiteHand();
         int getBlackHand();
         void initRules();

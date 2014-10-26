@@ -510,7 +510,7 @@ void test_best_move() {
         mill->table->setPos(a, 0, 0, true);
         make_test_is_end(mill, 0);
         string bestMove = mill->getBestMoveMCTS();
-        printf("best move: %s\n", bestMove.c_str());
+        printf("test: best move: %s\n", bestMove.c_str());
         delete mill;
         assert(bestMove == "move b6b4");
     }
@@ -526,7 +526,7 @@ void test_best_move() {
         mill->table->setPos(a, 0, 0, false);
         make_test_is_end(mill, 0);
         string bestMove = mill->getBestMoveMCTS();
-        printf("best move: %s\n", bestMove.c_str());
+        printf("test: best move: %s\n", bestMove.c_str());
         delete mill;
         assert(bestMove == "move b6b4");
     }
@@ -542,7 +542,7 @@ void test_best_move() {
         mill->table->setPos(a, 0, 0, true);
         make_test_is_end(mill, 0);
         string bestMove = mill->getBestMoveMCTS();
-        printf("best move: %s\n", bestMove.c_str());
+        printf("test: best move: %s\n", bestMove.c_str());
         delete mill;
         assert(bestMove.substr(7, 2) == "a7");
     }
@@ -556,8 +556,8 @@ void test_speed() {
         time(&start);
         string bestMove = mill->getBestMoveMCTS();
         time(&end);
-        printf("best move: %s\n", bestMove.c_str());
-        printf("elapsed time: %ld\n", end - start);
+        printf("test: best move: %s\n", bestMove.c_str());
+        printf("test: elapsed time: %ld\n", end - start);
         delete mill;
     }
 }

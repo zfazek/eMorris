@@ -7,6 +7,8 @@
 #include <QString>
 #include <vector>
 #include <time.h>
+#include <unordered_map>
+#include <thread>
 
 using namespace std;
 
@@ -76,25 +78,66 @@ void Mill::updateTable() {
     }
 }
 
-string Mill::getBestMoveMCTS() {
-    Node *move = new Node(this);
-    Table backupTable;
-    string bestMove = "";
-    time_t start, end;
-    time(&start);
+struct Point {
+    double totValue;
+    double nVisits;
+};
+
+struct MovetHasher {
+    size_t operator()(const Move &m) const {
+        return (size_t)(m.x + m.y + m.z + m.length);
+    }
+};
+
+void Mill::getBestMoveOneThread(Node *move) {
     for (int i = 0; i < n; i++) {
-        backupTable.backupPosition(table);
         move->selectAction();
-        backupTable.restorePosition(table);
+    }
+}
+
+string Mill::getBestMoveMCTS() {
+    time_t start, end;
+    int n_thread = thread::hardware_concurrency();
+    vector<Node*> nodes;
+    vector<thread> threads;
+    time(&start);
+    for (int i = 0; i < n_thread; i++) {
+        Table *t = new Table(table);
+        Node *node = new Node(t, n);
+        nodes.push_back(node);
+        threads.push_back(thread(&Mill::getBestMoveOneThread, this, nodes[i]));
+    }
+    for (thread &t : threads) {
+        t.join();
+    }
+    unordered_map<Move, Point, MovetHasher> children;
+    for (int i = 0; i < n_thread; i++) {
+        for (const Node *c : nodes[i]->getChildren()) {
+            children[c->currMove].totValue += c->totValue;
+            children[c->currMove].nVisits += c->nVisits;
+        }
+    }
+    Move bestMove;
+    double bestVisit = 0;
+    double totValue = 0;
+    double nVisits = 0;
+    for (const auto &it : children) {
+        if (it.second.nVisits > bestVisit) {
+            bestVisit = it.second.nVisits;
+            bestMove = it.first;
+        }
+        printf("%s %.0f/%.0f\n",
+                it.first.toString().c_str(),
+                it.second.totValue,
+                it.second.nVisits);
+        totValue += it.second.totValue;
+        nVisits += it.second.nVisits;
     }
     time(&end);
-    bestMove = move->getBest()->currMove.toString();
-    for (Node *c : move->getChildren()) {
-        c->print();
-    }
-    printf("best move: ");
-    move->getBest()->print();
+    printf("best move: %s (%.0f/%.0f)\n", bestMove.toString().c_str(), totValue, nVisits);
     printf("elapsed time: %ld\n", end - start);
-    delete move;
-    return bestMove;
+    for (Node *node : nodes) {
+        delete node;
+    }
+    return bestMove.toString();
 }

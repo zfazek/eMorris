@@ -75,6 +75,18 @@ Table::Table() {
     initRules();
 }
 
+Table::Table(const Table *t) : Table() {
+    whiteToMove = t->whiteToMove;
+    whiteHand = t->whiteHand;
+    blackHand = t->blackHand;
+    for (int i = 0; i < 24; i++) {
+        table[i] = t->table[i];
+    }
+}
+
+Table::~Table() {
+}
+
 int Table::getWhiteHand() {
     return whiteHand;
 }
@@ -99,7 +111,6 @@ void Table::initTable() {
  *
  ******************************************************************************/
 void Table::initRules() {
-
     int i = 0;
     int j;
     while (i < 120) {

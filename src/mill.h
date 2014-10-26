@@ -6,6 +6,7 @@
 class QString;
 class Table;
 class Move;
+class Node;
 
 class Mill {
     public:
@@ -22,6 +23,7 @@ class Mill {
         void setHistoryIdx(int idx);
         void updateTable();
         std::string getBestMoveMCTS();
+        void getBestMoveOneThread(Node *move);
         void backupPosition(const Mill *mill);
         void restorePosition(Mill *mill);
         int n;
@@ -30,10 +32,5 @@ class Mill {
         std::vector<QString> history;
         int historyIdx;
         void printMoves(std::vector<std::string>);
-
-        bool whiteToMove_backup;
-        int whiteHand_backup;
-        int blackHand_backup;
-        int t_backup[24];
 };
 

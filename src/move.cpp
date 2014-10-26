@@ -147,7 +147,7 @@ Move Move::getMove(QString input) {
     return move;
 }
 
-string Move::toString() {
+string Move::toString() const {
     if (length == 1) {
         char c = coordHelper[x * 3 + 2] + 'a';
         return "move " + string(1, c) + to_string(7 - coordHelper[x * 3 + 1]);

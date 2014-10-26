@@ -3,7 +3,8 @@
 #include <vector>
 #include "move.h"
 
-class Mill;
+//class Mill;
+class Table;
 //class Move;
 
 class Node {
@@ -13,23 +14,28 @@ class Node {
         static constexpr double epsilon = 1e-6;
         static const int MAX_LONG = 100;
         std::vector<Node*> children;
-        double nVisits = 0;
-        double totValue = 0;
         int idx = 0;
-        Mill *mill;
-
+        Table *table;
+        Table *backupTable;
+        int n;
 
     public:
 
-        Node(Mill *mill);
+        bool operator==(const Node &other) {
+            return currMove == other.currMove;
+        }
+
+        Move currMove;
+        double nVisits = 0;
+        double totValue = 0;
+
+        Node(Table *table, int n);
         ~Node();
         std::vector<Node*> getChildren();
         void selectAction();
         int arity();
         Node *getBest();
         void print();
-
-        Move currMove;
 
     private:
 

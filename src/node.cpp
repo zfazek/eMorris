@@ -1,5 +1,5 @@
 #include "node.h"
-#include "mill.h"
+//#include "mill.h"
 #include "move.h"
 #include "table.h"
 #include <vector>
@@ -11,8 +11,11 @@
 
 using namespace std;
 
-Node::Node(Mill *m) {
-    mill = m;
+Node::Node(Table *t, int nn) {
+    table = t;
+    backupTable = new Table();
+    backupTable->backupPosition(table);
+    n = nn;
 }
 
 Node::~Node() {
@@ -29,15 +32,19 @@ void Node::selectAction() {
     srand(time(0));
     vector<Node*> visited;
     Node *cur = this;
+    currMove.x = 0;
+    currMove.length = 1;
+    currMove.capture = false;
     visited.push_back(this);
-    bool whiteToMove = mill->table->whiteToMove;
+    backupTable->restorePosition(table);
+    bool whiteToMove = table->whiteToMove;
     while (!cur->isLeaf()) {
         cur = cur->select(visited.size());
-        mill->move(cur->currMove, false);
+        table->moveCheck(cur->currMove, true);
         visited.push_back(cur);
     }
     Node *newNode;
-    int value = mill->table->isEnd();
+    int value = table->isEnd();
     if (value == 0) {
         cur->expand();
         newNode = cur->select(visited.size());
@@ -61,7 +68,7 @@ Node *Node::select(int depth) {
     Node *selected = nullptr;
     double bestValue = -10e10;
     for (Node *c : children) {
-        if (depth == 1 && c->nVisits < (double)mill->n / children.size() / 3 ) {
+        if (depth == 1 && c->nVisits < (double)n / children.size() / 3 ) {
             return c;
         }
         double uctValue =
@@ -78,25 +85,25 @@ Node *Node::select(int depth) {
 
 int Node::evaluate(const Node *newNode) {
     Table t;
-    t.backupPosition(mill->table);
-    mill->move(newNode->currMove, false);
-    int end = mill->table->isEnd();
+    t.backupPosition(table);
+    table->moveCheck(newNode->currMove, true);
+    int end = table->isEnd();
     if (end != 0) {
-        t.restorePosition(mill->table);
+        t.restorePosition(table);
         return end;
     }
     for (int i = 0; i < MAX_LONG; i++) {
         vector<Move> moves = getTerminateMoves();
-        mill->move(moves[rand() % moves.size()], false);
+        table->moveCheck(moves[rand() % moves.size()], true);
 
         // -1: Black won, 0: no end, 1: White won
-        int end = mill->table->isEnd();
+        int end = table->isEnd();
         if (end != 0) {
-            t.restorePosition(mill->table);
+            t.restorePosition(table);
             return end;
         }
     }
-    t.restorePosition(mill->table);
+    t.restorePosition(table);
     return 0; // no progress -> DRAW
 }
 
@@ -117,15 +124,15 @@ bool Node::isLeaf() {
 
 vector<Move> Node::getTerminateMoves() {
     Table t;
-    vector<Move> moves = mill->table->getAllMoves();
+    vector<Move> moves = table->getAllMoves();
     vector<Move> terminate_moves;
     for (Move move : moves) {
-        t.backupPosition(mill->table);
-        mill->move(move, false);
-        if (mill->table->isEnd() != 0) {
+        t.backupPosition(table);
+        table->moveCheck(move, true);
+        if (table->isEnd() != 0) {
             terminate_moves.push_back(move);
         }
-        t.restorePosition(mill->table);
+        t.restorePosition(table);
     }
     if (terminate_moves.size() == 0) {
         return moves;
@@ -137,7 +144,7 @@ vector<Move> Node::getTerminateMoves() {
 void Node::expand() {
     vector<Move> moves = getTerminateMoves();
     for (size_t i = 0; i < moves.size(); i++) {
-        Node *node= new Node(mill);
+        Node *node= new Node(table, n);
         node->currMove = moves[i];
         children.push_back(node);
     }
