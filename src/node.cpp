@@ -77,12 +77,12 @@ Node *Node::select(int depth) {
 }
 
 int Node::evaluate(const Node *newNode) {
-    Mill m;
-    m.backupPosition(mill);
+    Table t;
+    t.backupPosition(mill->table);
     mill->move(newNode->currMove, false);
     int end = mill->table->isEnd();
     if (end != 0) {
-        m.restorePosition(mill);
+        t.restorePosition(mill->table);
         return end;
     }
     for (int i = 0; i < MAX_LONG; i++) {
@@ -92,11 +92,11 @@ int Node::evaluate(const Node *newNode) {
         // -1: Black won, 0: no end, 1: White won
         int end = mill->table->isEnd();
         if (end != 0) {
-            m.restorePosition(mill);
+            t.restorePosition(mill->table);
             return end;
         }
     }
-    m.restorePosition(mill);
+    t.restorePosition(mill->table);
     return 0; // no progress -> DRAW
 }
 
@@ -116,16 +116,16 @@ bool Node::isLeaf() {
 }
 
 vector<Move> Node::getTerminateMoves() {
-    Mill m;
+    Table t;
     vector<Move> moves = mill->table->getAllMoves();
     vector<Move> terminate_moves;
     for (Move move : moves) {
-        m.backupPosition(mill);
+        t.backupPosition(mill->table);
         mill->move(move, false);
         if (mill->table->isEnd() != 0) {
             terminate_moves.push_back(move);
         }
-        m.restorePosition(mill);
+        t.restorePosition(mill->table);
     }
     if (terminate_moves.size() == 0) {
         return moves;
@@ -135,7 +135,6 @@ vector<Move> Node::getTerminateMoves() {
 }
 
 void Node::expand() {
-    Mill m;
     vector<Move> moves = getTerminateMoves();
     for (size_t i = 0; i < moves.size(); i++) {
         Node *node= new Node(mill);

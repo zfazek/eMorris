@@ -34,103 +34,8 @@ void Mill::initTable(bool historyClear) {
     }
 }
 
-int Mill::getCoordX(int i) {
-    if (i >= 0 && i <= 23)
-        return coordHelper[i * 3 + 2];
-    else
-        return -1;
-}
-
-int Mill::getCoordY(int i) {
-    if (i >= 0 && i <= 23)
-        return coordHelper[i * 3 + 1];
-    else
-        return -1;
-}
-
-int Mill::getField(int i) {
-    return table->table[i];
-}
-
 vector<QString> Mill::getHistory() {
     return history;
-}
-
-Move Mill::getMove(QString input) {
-    Move move;
-    move.length = 0;
-    int length = input.length();
-
-    /* move d2 */
-    if (length == 7) {
-        int x = input.at(5).toAscii() - 'a';
-        int y = 7 - input.mid(6, 1).toInt();
-        int i = getIdx(x, y);
-        if (i == -1) return move;
-        move.length = 1;
-        move.capture = false;
-        move.x = i;
-        return move;
-    }
-
-    /* move d2d3 */
-    if (length == 9) {
-        int x1 = input.at(5).toAscii() - 'a';
-        int y1 = 7 - input.mid(6, 1).toInt();
-        int i1 = getIdx(x1, y1);
-        if (i1 == -1) return move;
-        int x2 = input.at(7).toAscii() - 'a';
-        int y2 = 7 - input.mid(8, 1).toInt();
-        int i2 = getIdx(x2, y2);
-        if (i2 == -1) return move;
-        move.length = 2;
-        move.capture = false;
-        move.x = i1;
-        move.y = i2;
-        return move;
-    }
-
-    /* move d2,d3 */
-    if (length == 10) {
-        int x1 = input.at(5).toAscii() - 'a';
-        int y1 = 7 - input.mid(6, 1).toInt();
-        int i1 = getIdx(x1, y1);
-        if (i1 == -1) return move;
-        int x2 = input.at(8).toAscii() - 'a';
-        int y2 = 7 - input.mid(9, 1).toInt();
-        int i2 = getIdx(x2, y2);
-        if (i2 == -1) return move;
-        move.length = 2;
-        move.capture = true;
-        move.x = i1;
-        move.y = i2;
-        return move;
-    }
-
-    /* move a1d1,f4 */
-    if (length == 12) {
-        int x1 = input.at(5).toAscii() - 'a';
-        int y1 = 7 - input.mid(6, 1).toInt();
-        int i1 = getIdx(x1, y1);
-        if (i1 == -1) return move;
-        int x2 = input.at(7).toAscii() - 'a';
-        int y2 = 7 - input.mid(8, 1).toInt();
-        int i2 = getIdx(x2, y2);
-        if (i2 == -1) return move;
-        int comma = input.at(9).toAscii();
-        if (comma != ',') return move;
-        int x3 = input.at(10).toAscii() - 'a';
-        int y3 = 7 - input.mid(11, 1).toInt();
-        int i3 = getIdx(x3, y3);
-        if (i3 == -1) return move;
-        move.length = 3;
-        move.capture = true;
-        move.x = i1;
-        move.y = i2;
-        move.z = i3;
-        return move;
-    }
-    return move;
 }
 
 int Mill::move(Move move, bool updateHistory) {
@@ -151,20 +56,6 @@ int Mill::move(Move move, bool updateHistory) {
     }
 }
 
-/******************************************************************************
- *
- * Gets the index of the field from coordinates
- *
- ******************************************************************************/
-int Mill::getIdx(int x, int y) {
-    for (int i = 0; i < 24; ++i) {
-        if (coordHelper[i * 3 + 1] == y &&
-                coordHelper[i * 3 + 2] == x)
-            return i;
-    }
-    return -1;
-}
-
 int Mill::getHistoryIdx() {
     return historyIdx;
 }
@@ -181,61 +72,20 @@ void Mill::setHistoryIdx(int idx) {
 void Mill::updateTable() {
     initTable(false);
     for (int i = 0; i <= historyIdx; i++) {
-        table->moveCheck(getMove(history[i]), true);
+        table->moveCheck(Move::getMove(history[i]), true);
     }
-}
-
-/******************************************************************************
- *
- * Sets any position. It is good for testing.
- * t contains the table
- *
- ******************************************************************************/
-void Mill::setPos(int *t, int whiteHand, int blackHand, bool whiteToMove) {
-    for (int i = 0; i < 24; i++)
-        table->table[i] = *(t+i);
-    table->whiteHand = whiteHand;
-    table->blackHand = blackHand;
-    table->whiteToMove = whiteToMove;
-}
-
-void Mill::backupPosition() {
-    whiteToMove_backup = table->whiteToMove;
-    whiteHand_backup = table->whiteHand;
-    blackHand_backup = table->blackHand;
-    for (int i = 0; i < 24; i++) t_backup[i] = table->table[i];
-}
-
-void Mill::backupPosition(const Mill *mill) {
-    whiteToMove_backup = mill->table->whiteToMove;
-    whiteHand_backup = mill->table->whiteHand;
-    blackHand_backup = mill->table->blackHand;
-    for (int i = 0; i < 24; i++) t_backup[i] = mill->table->table[i];
-}
-
-void Mill::restorePosition() {
-    table->whiteToMove = whiteToMove_backup;
-    table->whiteHand = whiteHand_backup;
-    table->blackHand = blackHand_backup;
-    for (int i = 0; i < 24; i++) table->table[i] = t_backup[i];
-}
-
-void Mill::restorePosition(Mill *mill) {
-    mill->table->whiteToMove = whiteToMove_backup;
-    mill->table->whiteHand = whiteHand_backup;
-    mill->table->blackHand = blackHand_backup;
-    for (int i = 0; i < 24; i++) mill->table->table[i] = t_backup[i];
 }
 
 string Mill::getBestMoveMCTS() {
     Node *move = new Node(this);
+    Table backupTable;
     string bestMove = "";
     time_t start, end;
     time(&start);
     for (int i = 0; i < n; i++) {
-        backupPosition();
+        backupTable.backupPosition(table);
         move->selectAction();
-        restorePosition();
+        backupTable.restorePosition(table);
     }
     time(&end);
     bestMove = move->getBest()->currMove.toString();

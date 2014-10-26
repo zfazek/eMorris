@@ -76,7 +76,7 @@ void CentralWidget::initGui() {
 }
 
 void CentralWidget::MoveDoubleClicked(QListWidgetItem *item) {
-    mill->move(Mill::getMove(item->text()), true);
+    mill->move(Move::getMove(item->text()), true);
     printTable();
     int isEnd = mill->table->isEnd();
     printGameOver(isEnd);
@@ -88,7 +88,7 @@ void CentralWidget::MoveDoubleClicked(QListWidgetItem *item) {
 
 void CentralWidget::makeMove() {
     string bestMove = mill->getBestMoveMCTS();
-    mill->move(Mill::getMove(QString::fromStdString(bestMove)), true);
+    mill->move(Move::getMove(QString::fromStdString(bestMove)), true);
     printTable();
     int isEnd = mill->table->isEnd();
     printGameOver(isEnd);

@@ -421,6 +421,10 @@ vector<Move> Table::getAllMoves() {
     return moves;
 }
 
+int Table::getField(int i) {
+    return table[i];
+}
+
 /******************************************************************************
  *
  * Returns 0 if not end, 1 if white won, -1 if black won
@@ -462,6 +466,34 @@ bool Table::hasSoloMorris(int color) {
             if (! isMill(i, color))
                 return true;
     return false;
+}
+
+/******************************************************************************
+ *
+ * Sets any position. It is good for testing.
+ * t contains the table
+ *
+ ******************************************************************************/
+void Table::setPos(int *t, int w, int b, bool wToMove) {
+    for (int i = 0; i < 24; i++)
+        table[i] = *(t+i);
+    whiteHand = w;
+    blackHand = b;
+    whiteToMove = wToMove;
+}
+
+void Table::backupPosition(const Table *t) {
+    whiteToMove = t->whiteToMove;
+    whiteHand = t->whiteHand;
+    blackHand = t->blackHand;
+    for (int i = 0; i < 24; i++) table[i] = t->table[i];
+}
+
+void Table::restorePosition(Table *t) {
+    t->whiteToMove = whiteToMove;
+    t->whiteHand = whiteHand;
+    t->blackHand = blackHand;
+    for (int i = 0; i < 24; i++) t->table[i] = table[i];
 }
 
 /******************************************************************************

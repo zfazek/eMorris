@@ -32,6 +32,10 @@ struct Table {
         bool isNeighbor(int, int);
         bool hasSoloMorris(int);
         std::vector<Move> getAllMoves();
+        int getField(int idx);
+        void setPos(int* table, int whiteHand, int blackHand, bool whiteToMove);
+        void backupPosition(const Table *table);
+        void restorePosition(Table *table);
 
 };
 

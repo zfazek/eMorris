@@ -81,13 +81,13 @@ void Canvas::paintEvent(QPaintEvent* event) {
     qp.drawLine(10*L, 8*L, 14*L, 8*L);
 
     for (int i = 0; i < 24; ++i) {
-        if (mill->getField(i) == EMPTY) {
+        if (mill->table->getField(i) == EMPTY) {
         }
-        if (mill->getField(i) == WHITE) {
+        if (mill->table->getField(i) == WHITE) {
             qp.setBrush(Qt::white);
             qp.drawEllipse(coord[i*3+1]*L-L/2, coord[i*3+2]*L-L/2, L, L);
         }
-        if (mill->getField(i) == BLACK) {
+        if (mill->table->getField(i) == BLACK) {
             qp.setBrush(Qt::black);
             qp.drawEllipse(coord[i*3+1]*L-L/2, coord[i*3+2]*L-L/2, L, L);
         }

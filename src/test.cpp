@@ -10,7 +10,7 @@ using namespace std;
 
 void make_test_move_check(Mill *mill, QString move, int expected) {
     int result;
-    result = mill->table->moveCheck(Mill::getMove(move), true);
+    result = mill->table->moveCheck(Move::getMove(move), true);
     //printf("Test: %s -> %d\n", move.toStdString().c_str(), result);
     assert(result == expected);
 }
@@ -45,7 +45,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    0};
-        mill->setPos(a, 6, 6, true);
+        mill->table->setPos(a, 6, 6, true);
         make_test_move_check(mill, "move a7", -1);
         make_test_move_check(mill, "move a7g1", -1);
         make_test_move_check(mill, "move a7g4", -1);
@@ -62,7 +62,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    0};
-        mill->setPos(a, 6, 6, false);
+        mill->table->setPos(a, 6, 6, false);
         make_test_move_check(mill, "move a7", -1);
         make_test_move_check(mill, "move a7g1", -1);
         make_test_move_check(mill, "move a7g4", -1);
@@ -79,7 +79,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    0};
-        mill->setPos(a, 6, 6, true);
+        mill->table->setPos(a, 6, 6, true);
         make_test_move_check(mill, "move a7g4", 0);
     }
     {
@@ -90,7 +90,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    0};
-        mill->setPos(a, 6, 6, false);
+        mill->table->setPos(a, 6, 6, false);
         make_test_move_check(mill, "move a7g4", 0);
     }
     {
@@ -101,7 +101,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  1,
             0,    0,    0};
-        mill->setPos(a, 6, 6, false);
+        mill->table->setPos(a, 6, 6, false);
         make_test_move_check(mill, "move a7f4", 0);
     }
     {
@@ -112,7 +112,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1a1", 0);
     }
     {
@@ -123,7 +123,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1d1", 0);
     }
     {
@@ -134,7 +134,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1g4", -1);
     }
     {
@@ -145,7 +145,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1a7", -1);
     }
     {
@@ -156,7 +156,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1a7,f6", -1);
     }
     {
@@ -167,7 +167,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1a7,d7", -1);
     }
     {
@@ -178,7 +178,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1a7,f4", 0);
     }
     {
@@ -189,7 +189,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1a7,f4", -1);
     }
     {
@@ -200,7 +200,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1a7,b4", -1);
     }
     {
@@ -211,7 +211,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1a7,a4", -1);
     }
     {
@@ -222,7 +222,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move g1a7,a4", 0);
     }
     {
@@ -233,7 +233,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1a1", 0);
     }
     {
@@ -244,7 +244,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1d1", 0);
     }
     {
@@ -255,7 +255,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1g4", -1);
     }
     {
@@ -266,7 +266,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1a7", -1);
     }
     {
@@ -277,7 +277,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1a7,f6", -1);
     }
     {
@@ -288,7 +288,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1a7,d7", -1);
     }
     {
@@ -299,7 +299,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1a7,f4", 0);
     }
     {
@@ -310,7 +310,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1a7,f4", -1);
     }
     {
@@ -321,7 +321,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1a7,b4", -1);
     }
     {
@@ -332,7 +332,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1a7,a4", 0);
     }
     {
@@ -343,7 +343,7 @@ void test_moveXX() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_move_check(mill, "move g1a7,a4", -1);
     }
     {
@@ -354,7 +354,7 @@ void test_moveXX() {
             0,0,0,
             1,  1,  1,
             1,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move d2d1,d6", 0);
     }
     {
@@ -365,7 +365,7 @@ void test_moveXX() {
             0,0,0,
             1,1,0,
             0,0,0};
-        mill->setPos(a, 6, 6, true);
+        mill->table->setPos(a, 6, 6, true);
         make_test_move_check(mill, "move b6b6", -1);
     }
     {
@@ -376,7 +376,7 @@ void test_moveXX() {
             1,2,0,
             2,2,0,
             0,2,1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_move_check(mill, "move c3g7,d7", -1);
     }
     delete mill;
@@ -392,7 +392,7 @@ void test_isEnd() {
             0,0,0,
             0,  0,  0,
             0,    0,    2};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_is_end(mill, 0);
     }
     {
@@ -403,7 +403,7 @@ void test_isEnd() {
             0,0,0,
             0,  0,  0,
             0,    0,    0};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_is_end(mill, 1);
     }
     {
@@ -414,7 +414,7 @@ void test_isEnd() {
             0,0,0,
             0,  0,  0,
             0,    0,    0};
-        mill->setPos(a, 0, 1, true);
+        mill->table->setPos(a, 0, 1, true);
         make_test_is_end(mill, 0);
     }
     {
@@ -425,7 +425,7 @@ void test_isEnd() {
             0,0,0,
             0,  0,  0,
             0,    0,    1};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_is_end(mill, 0);
     }
     {
@@ -436,7 +436,7 @@ void test_isEnd() {
             0,0,0,
             0,  0,  0,
             0,    0,    0};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_is_end(mill, -1);
     }
     {
@@ -447,7 +447,7 @@ void test_isEnd() {
             0,0,0,
             0,  0,  0,
             0,    0,    0};
-        mill->setPos(a, 1, 0, true);
+        mill->table->setPos(a, 1, 0, true);
         make_test_is_end(mill, 0);
     }
     {
@@ -458,7 +458,7 @@ void test_isEnd() {
             0,0,0,
             1,  1,  1,
             1,    0,    1};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_is_end(mill, 1);
     }
     {
@@ -469,7 +469,7 @@ void test_isEnd() {
             0,0,0,
             1,  1,  1,
             1,    0,    1};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_is_end(mill, 0);
     }
     {
@@ -480,7 +480,7 @@ void test_isEnd() {
             0,0,0,
             2,  2,  2,
             2,    0,    2};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_is_end(mill, -1);
     }
     {
@@ -491,7 +491,7 @@ void test_isEnd() {
             0,0,0,
             2,  2,  2,
             2,    0,    2};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_is_end(mill, 0);
     }
     delete mill;
@@ -507,7 +507,7 @@ void test_best_move() {
             0,0,0,
             0,  0,  0,
             1,    0,    0};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_is_end(mill, 0);
         string bestMove = mill->getBestMoveMCTS();
         printf("best move: %s\n", bestMove.c_str());
@@ -523,7 +523,7 @@ void test_best_move() {
             0,0,0,
             0,  0,  0,
             2,    0,    0};
-        mill->setPos(a, 0, 0, false);
+        mill->table->setPos(a, 0, 0, false);
         make_test_is_end(mill, 0);
         string bestMove = mill->getBestMoveMCTS();
         printf("best move: %s\n", bestMove.c_str());
@@ -539,7 +539,7 @@ void test_best_move() {
             0,0,0,
             1,  0,  0,
             0,    0,    0};
-        mill->setPos(a, 0, 0, true);
+        mill->table->setPos(a, 0, 0, true);
         make_test_is_end(mill, 0);
         string bestMove = mill->getBestMoveMCTS();
         printf("best move: %s\n", bestMove.c_str());
@@ -593,7 +593,7 @@ void test_getMove() {
     {
         Mill *mill = new Mill();
         string bestMove = "move c3";
-        mill->move(Mill::getMove(QString::fromStdString(bestMove)), true);
+        mill->move(Move::getMove(QString::fromStdString(bestMove)), true);
         delete mill;
     }
 }

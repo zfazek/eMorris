@@ -1,4 +1,5 @@
 #include "move.h"
+#include <QString>
 
 using namespace std;
 
@@ -53,6 +54,97 @@ Move::Move(int l, bool cap, int a, int b, int c) : Move(l, cap, a, b) {
 }
 
 Move::~Move() {
+}
+
+/******************************************************************************
+ *
+ * Gets the index of the field from coordinates
+ *
+ ******************************************************************************/
+int Move::getIdx(int x, int y) {
+    for (int i = 0; i < 24; ++i) {
+        if (coordHelper[i * 3 + 1] == y &&
+                coordHelper[i * 3 + 2] == x)
+            return i;
+    }
+    return -1;
+}
+
+Move Move::getMove(QString input) {
+    Move move;
+    move.length = 0;
+    int length = input.length();
+
+    /* move d2 */
+    if (length == 7) {
+        int x = input.at(5).toAscii() - 'a';
+        int y = 7 - input.mid(6, 1).toInt();
+        int i = getIdx(x, y);
+        if (i == -1) return move;
+        move.length = 1;
+        move.capture = false;
+        move.x = i;
+        return move;
+    }
+
+    /* move d2d3 */
+    if (length == 9) {
+        int x1 = input.at(5).toAscii() - 'a';
+        int y1 = 7 - input.mid(6, 1).toInt();
+        int i1 = getIdx(x1, y1);
+        if (i1 == -1) return move;
+        int x2 = input.at(7).toAscii() - 'a';
+        int y2 = 7 - input.mid(8, 1).toInt();
+        int i2 = getIdx(x2, y2);
+        if (i2 == -1) return move;
+        move.length = 2;
+        move.capture = false;
+        move.x = i1;
+        move.y = i2;
+        return move;
+    }
+
+    /* move d2,d3 */
+    if (length == 10) {
+        int x1 = input.at(5).toAscii() - 'a';
+        int y1 = 7 - input.mid(6, 1).toInt();
+        int i1 = getIdx(x1, y1);
+        if (i1 == -1) return move;
+        int x2 = input.at(8).toAscii() - 'a';
+        int y2 = 7 - input.mid(9, 1).toInt();
+        int i2 = getIdx(x2, y2);
+        if (i2 == -1) return move;
+        move.length = 2;
+        move.capture = true;
+        move.x = i1;
+        move.y = i2;
+        return move;
+    }
+
+    /* move a1d1,f4 */
+    if (length == 12) {
+        int x1 = input.at(5).toAscii() - 'a';
+        int y1 = 7 - input.mid(6, 1).toInt();
+        int i1 = getIdx(x1, y1);
+        if (i1 == -1) return move;
+        int x2 = input.at(7).toAscii() - 'a';
+        int y2 = 7 - input.mid(8, 1).toInt();
+        int i2 = getIdx(x2, y2);
+        if (i2 == -1) return move;
+        int comma = input.at(9).toAscii();
+        if (comma != ',') return move;
+        int x3 = input.at(10).toAscii() - 'a';
+        int y3 = 7 - input.mid(11, 1).toInt();
+        int i3 = getIdx(x3, y3);
+        if (i3 == -1) return move;
+        move.length = 3;
+        move.capture = true;
+        move.x = i1;
+        move.y = i2;
+        move.z = i3;
+        return move;
+    }
+    return move;
 }
 
 string Move::toString() {

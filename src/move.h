@@ -2,6 +2,8 @@
 
 #include <string>
 
+class QString;
+
 extern int coordHelper[72];
 
 struct Move {
@@ -17,4 +19,6 @@ struct Move {
     Move(int length, bool capture, int x, int y, int z);
     ~Move();
     std::string toString();
+    static Move getMove(QString);
+    static int getIdx(int, int);
 };
