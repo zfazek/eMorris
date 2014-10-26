@@ -1,5 +1,6 @@
 #include "mill.h"
 #include "move.h"
+#include "table.h"
 #include <assert.h>
 #include <stdio.h>
 #include <QString>
@@ -9,14 +10,14 @@ using namespace std;
 
 void make_test_move_check(Mill *mill, QString move, int expected) {
     int result;
-    result = mill->moveCheck(mill->getMove(move), true);
+    result = mill->table->moveCheck(Mill::getMove(move), true);
     //printf("Test: %s -> %d\n", move.toStdString().c_str(), result);
     assert(result == expected);
 }
 
 void make_test_is_end(Mill *mill, int expected) {
     int result;
-    result = mill->isEnd();
+    result = mill->table->isEnd();
     //printf("Test: %d\n", result);
     assert(result == expected);
 }
@@ -592,7 +593,7 @@ void test_getMove() {
     {
         Mill *mill = new Mill();
         string bestMove = "move c3";
-        mill->move(mill->getMove(QString::fromStdString(bestMove)), true);
+        mill->move(Mill::getMove(QString::fromStdString(bestMove)), true);
         delete mill;
     }
 }

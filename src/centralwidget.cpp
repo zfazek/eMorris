@@ -76,11 +76,11 @@ void CentralWidget::initGui() {
 }
 
 void CentralWidget::MoveDoubleClicked(QListWidgetItem *item) {
-    mill->move(mill->getMove(item->text()), true);
+    mill->move(Mill::getMove(item->text()), true);
     printTable();
-    int isEnd = mill->isEnd();
+    int isEnd = mill->table->isEnd();
     printGameOver(isEnd);
-    if (mill->isEnd() != 0) {
+    if (isEnd != 0) {
         return;
     }
     makeMove();
@@ -88,14 +88,13 @@ void CentralWidget::MoveDoubleClicked(QListWidgetItem *item) {
 
 void CentralWidget::makeMove() {
     string bestMove = mill->getBestMoveMCTS();
-    mill->move(mill->getMove(QString::fromStdString(bestMove)), true);
+    mill->move(Mill::getMove(QString::fromStdString(bestMove)), true);
     printTable();
-    int isEnd = mill->isEnd();
+    int isEnd = mill->table->isEnd();
     printGameOver(isEnd);
 }
 
 void CentralWidget::printGameOver(int isEnd) {
-    isEnd = mill->isEnd();
     if (isEnd == 0) {
         return;
     }
@@ -205,7 +204,7 @@ void CentralWidget::printTable() {
     labelBlackHand->setText(QString("Black hand: %1").arg(mill->table->getBlackHand()));
     printHistory();
     listWidget->clear();
-    vector<Move> moves = mill->getAllMoves();
+    vector<Move> moves = mill->table->getAllMoves();
     vector<string> moves1;
     for(vector<Move>::iterator it = moves.begin(); it != moves.end(); it++) {
         moves1.push_back((*it).toString());

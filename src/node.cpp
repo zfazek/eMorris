@@ -37,7 +37,7 @@ void Node::selectAction() {
         visited.push_back(cur);
     }
     Node *newNode;
-    int value = mill->isEnd();
+    int value = mill->table->isEnd();
     if (value == 0) {
         cur->expand();
         newNode = cur->select(visited.size());
@@ -80,7 +80,7 @@ int Node::evaluate(const Node *newNode) {
     Mill m;
     m.backupPosition(mill);
     mill->move(newNode->currMove, false);
-    int end = mill->isEnd();
+    int end = mill->table->isEnd();
     if (end != 0) {
         m.restorePosition(mill);
         return end;
@@ -90,7 +90,7 @@ int Node::evaluate(const Node *newNode) {
         mill->move(moves[rand() % moves.size()], false);
 
         // -1: Black won, 0: no end, 1: White won
-        int end = mill->isEnd();
+        int end = mill->table->isEnd();
         if (end != 0) {
             m.restorePosition(mill);
             return end;
@@ -117,12 +117,12 @@ bool Node::isLeaf() {
 
 vector<Move> Node::getTerminateMoves() {
     Mill m;
-    vector<Move> moves = mill->getAllMoves();
+    vector<Move> moves = mill->table->getAllMoves();
     vector<Move> terminate_moves;
     for (Move move : moves) {
         m.backupPosition(mill);
         mill->move(move, false);
-        if (mill->isEnd() != 0) {
+        if (mill->table->isEnd() != 0) {
             terminate_moves.push_back(move);
         }
         m.restorePosition(mill);

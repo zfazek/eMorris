@@ -14,7 +14,6 @@ class Mill {
         ~Mill();
         Table *table;
         void initTable(bool);
-        void initRules();
         int getCoordX(int);
         int getCoordY(int);
         int getField(int);
@@ -22,17 +21,11 @@ class Mill {
         int getBlackHand();
         std::vector<QString> getHistory();
         int move(Move move, bool updateHistory);
-        Move getMove(QString);
-        int moveCheck(Move move, bool updateHistory);
+        static Move getMove(QString);
         int getHistoryIdx();
         void setHistoryIdx(int idx);
         void updateTable();
         void setPos(int* table, int whiteHand, int blackHand, bool whiteToMove);
-        int moveCheck(int x, bool makeMove);
-        int moveCheck(int x, int y, bool makeMove, int n_white, int n_black);
-        int moveCheck(int x, int y, int z, bool makeMove, int n_white, int n_black);
-        std::vector<Move> getAllMoves();
-        int isEnd();
         std::string getBestMoveMCTS();
         void backupPosition();
         void backupPosition(const Mill *mill);
@@ -41,14 +34,9 @@ class Mill {
         int n;
 
     private:
-        int mill[24][4];
         std::vector<QString> history;
         int historyIdx;
-        int getIdx(int, int);
-        bool isMill(int idx, int color);
-        bool hasSoloMorris(int);
-        bool isNeighbor(int, int);
-        int getNofPiece(int);
+        static int getIdx(int, int);
         void printMoves(std::vector<std::string>);
 
         bool whiteToMove_backup;
