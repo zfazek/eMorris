@@ -1,5 +1,4 @@
 #include "node.h"
-//#include "mill.h"
 #include "move.h"
 #include "table.h"
 #include <vector>
@@ -16,12 +15,15 @@ Node::Node(Table *t, int nn) {
     backupTable = new Table();
     backupTable->backupPosition(table);
     n = nn;
+    totValue = 0.0;
+    nVisits = 0.0;
 }
 
 Node::~Node() {
     for (Node *c : children) {
         delete c;
     }
+    delete backupTable;
 }
 
 vector<Node*> Node::getChildren() {
@@ -32,9 +34,6 @@ void Node::selectAction() {
     srand(time(0));
     vector<Node*> visited;
     Node *cur = this;
-    currMove.x = 0;
-    currMove.length = 1;
-    currMove.capture = false;
     visited.push_back(this);
     backupTable->restorePosition(table);
     bool whiteToMove = table->whiteToMove;
@@ -94,7 +93,9 @@ int Node::evaluate(const Node *newNode) {
     }
     for (int i = 0; i < MAX_LONG; i++) {
         vector<Move> moves = getTerminateMoves();
-        table->moveCheck(moves[rand() % moves.size()], true);
+        if (moves.size() > 0) {
+            table->moveCheck(moves[rand() % moves.size()], true);
+        }
 
         // -1: Black won, 0: no end, 1: White won
         int end = table->isEnd();
@@ -144,7 +145,7 @@ vector<Move> Node::getTerminateMoves() {
 void Node::expand() {
     vector<Move> moves = getTerminateMoves();
     for (size_t i = 0; i < moves.size(); i++) {
-        Node *node= new Node(table, n);
+        Node *node = new Node(table, n);
         node->currMove = moves[i];
         children.push_back(node);
     }

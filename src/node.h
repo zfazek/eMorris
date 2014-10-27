@@ -26,8 +26,8 @@ class Node {
         }
 
         Move currMove;
-        double nVisits = 0;
-        double totValue = 0;
+        double nVisits;
+        double totValue;
 
         Node(Table *table, int n);
         ~Node();

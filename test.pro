@@ -2,8 +2,8 @@ QT       += core gui
 
 TARGET = test_eMorris
 TEMPLATE = app
-QMAKE_CXXFLAGS += -g -std=c++11 -pg
-LIBS += -pg
+QMAKE_CXXFLAGS += -g -std=c++11 -O2
+LIBS +=
 
 
 SOURCES += src/test.cpp\

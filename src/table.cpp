@@ -493,14 +493,14 @@ void Table::setPos(int *t, int w, int b, bool wToMove) {
     whiteToMove = wToMove;
 }
 
-void Table::backupPosition(const Table *t) {
+void Table::backupPosition(const Table* const t) {
     whiteToMove = t->whiteToMove;
     whiteHand = t->whiteHand;
     blackHand = t->blackHand;
     for (int i = 0; i < 24; i++) table[i] = t->table[i];
 }
 
-void Table::restorePosition(Table *t) {
+void Table::restorePosition(Table* const t) const {
     t->whiteToMove = whiteToMove;
     t->whiteHand = whiteHand;
     t->blackHand = blackHand;

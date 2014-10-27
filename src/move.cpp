@@ -37,9 +37,14 @@ int coordHelper[72] = {
 };
 
 Move::Move() {
+    x = 0;
+    y = 0;
+    z = 0;
+    capture = false;
+    length = 0;
 }
 
-Move::Move(int l, bool cap, int a) {
+Move::Move(int l, bool cap, int a) : Move() {
     length = l;
     capture = cap;
     x = a;
@@ -78,7 +83,7 @@ Move Move::getMove(QString input) {
     /* move d2 */
     if (length == 7) {
         int x = input.at(5).toAscii() - 'a';
-        int y = 7 - input.mid(6, 1).toInt();
+        int y = 7 - input.at(6).toAscii() + '0';
         int i = getIdx(x, y);
         if (i == -1) return move;
         move.length = 1;
@@ -90,11 +95,11 @@ Move Move::getMove(QString input) {
     /* move d2d3 */
     if (length == 9) {
         int x1 = input.at(5).toAscii() - 'a';
-        int y1 = 7 - input.mid(6, 1).toInt();
+        int y1 = 7 - input.at(6).toAscii() + '0';
         int i1 = getIdx(x1, y1);
         if (i1 == -1) return move;
         int x2 = input.at(7).toAscii() - 'a';
-        int y2 = 7 - input.mid(8, 1).toInt();
+        int y2 = 7 - input.at(8).toAscii() + '0';
         int i2 = getIdx(x2, y2);
         if (i2 == -1) return move;
         move.length = 2;
@@ -107,11 +112,11 @@ Move Move::getMove(QString input) {
     /* move d2,d3 */
     if (length == 10) {
         int x1 = input.at(5).toAscii() - 'a';
-        int y1 = 7 - input.mid(6, 1).toInt();
+        int y1 = 7 - input.at(6).toAscii() + '0';
         int i1 = getIdx(x1, y1);
         if (i1 == -1) return move;
         int x2 = input.at(8).toAscii() - 'a';
-        int y2 = 7 - input.mid(9, 1).toInt();
+        int y2 = 7 - input.at(9).toAscii() + '0';
         int i2 = getIdx(x2, y2);
         if (i2 == -1) return move;
         move.length = 2;
@@ -124,17 +129,17 @@ Move Move::getMove(QString input) {
     /* move a1d1,f4 */
     if (length == 12) {
         int x1 = input.at(5).toAscii() - 'a';
-        int y1 = 7 - input.mid(6, 1).toInt();
+        int y1 = 7 - input.at(6).toAscii() + '0';
         int i1 = getIdx(x1, y1);
         if (i1 == -1) return move;
         int x2 = input.at(7).toAscii() - 'a';
-        int y2 = 7 - input.mid(8, 1).toInt();
+        int y2 = 7 - input.at(8).toAscii() + '0';
         int i2 = getIdx(x2, y2);
         if (i2 == -1) return move;
         int comma = input.at(9).toAscii();
         if (comma != ',') return move;
         int x3 = input.at(10).toAscii() - 'a';
-        int y3 = 7 - input.mid(11, 1).toInt();
+        int y3 = 7 - input.at(11).toAscii() + '0';
         int i3 = getIdx(x3, y3);
         if (i3 == -1) return move;
         move.length = 3;

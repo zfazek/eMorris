@@ -18,7 +18,7 @@ struct Table {
         int mill[24][4];
 
         Table();
-        Table(const Table *table);
+        Table(const Table* table);
         ~Table();
         int getWhiteHand();
         int getBlackHand();
@@ -37,8 +37,8 @@ struct Table {
         std::vector<Move> getAllMoves();
         int getField(int idx);
         void setPos(int* table, int whiteHand, int blackHand, bool whiteToMove);
-        void backupPosition(const Table *table);
-        void restorePosition(Table *table);
+        void backupPosition(const Table* const table);
+        void restorePosition(Table* const table) const;
 
 };
 

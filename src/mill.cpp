@@ -81,6 +81,11 @@ void Mill::updateTable() {
 struct Point {
     double totValue;
     double nVisits;
+
+    Point() {
+        totValue = 0.0;
+        nVisits = 0.0;
+    }
 };
 
 struct MovetHasher {
@@ -100,9 +105,11 @@ string Mill::getBestMoveMCTS() {
     int n_thread = thread::hardware_concurrency();
     vector<Node*> nodes;
     vector<thread> threads;
+    vector<Table*> tables;
     time(&start);
     for (int i = 0; i < n_thread; i++) {
         Table *t = new Table(table);
+        tables.push_back(t);
         Node *node = new Node(t, n);
         nodes.push_back(node);
         threads.push_back(thread(&Mill::getBestMoveOneThread, this, nodes[i]));
@@ -126,18 +133,23 @@ string Mill::getBestMoveMCTS() {
             bestVisit = it.second.nVisits;
             bestMove = it.first;
         }
+        /*
         printf("%s %.0f/%.0f\n",
                 it.first.toString().c_str(),
                 it.second.totValue,
                 it.second.nVisits);
+                */
         totValue += it.second.totValue;
         nVisits += it.second.nVisits;
     }
     time(&end);
-    printf("best move: %s (%.0f/%.0f)\n", bestMove.toString().c_str(), totValue, nVisits);
-    printf("elapsed time: %ld\n", end - start);
+    //printf("best move: %s (%.0f/%.0f)\n", bestMove.toString().c_str(), totValue, nVisits);
+    //printf("elapsed time: %ld\n", end - start);
     for (Node *node : nodes) {
         delete node;
+    }
+    for (Table* table : tables) {
+        delete table;
     }
     return bestMove.toString();
 }
