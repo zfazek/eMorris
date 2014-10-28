@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QThread>
 #include <stdio.h>
 #include <string>
 
@@ -63,6 +64,4 @@ signals:
         void historyNext();
         void MoveDoubleClicked(QListWidgetItem*);
         void makeMove();
-
 };
-

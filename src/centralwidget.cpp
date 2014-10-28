@@ -87,7 +87,26 @@ void CentralWidget::MoveDoubleClicked(QListWidgetItem *item) {
 }
 
 void CentralWidget::makeMove() {
-    string bestMove = mill->getBestMoveMCTS();
+    listWidget->setEnabled(false);
+    buttonHistoryToStart->setEnabled(false);
+    buttonHistoryToEnd->setEnabled(false);
+    buttonHistoryPrev->setEnabled(false);
+    buttonHistoryNext->setEnabled(false);
+    buttonMove->setEnabled(false);
+    mill->thinking = true;
+    std::thread t(&Mill::setBestMoveMCTS, mill);
+    while (mill->thinking) {
+        QCoreApplication::processEvents();
+        usleep(300);
+    }
+    t.join();
+    buttonHistoryToStart->setEnabled(true);
+    buttonHistoryToEnd->setEnabled(true);
+    buttonHistoryPrev->setEnabled(true);
+    buttonHistoryNext->setEnabled(true);
+    buttonMove->setEnabled(true);
+    listWidget->setEnabled(true);
+    string bestMove = mill->bestMoveStr;
     mill->move(Move::getMove(QString::fromStdString(bestMove)), true);
     printTable();
     int isEnd = mill->table->isEnd();
@@ -215,6 +234,5 @@ void CentralWidget::printTable() {
     }
 
     // Updates the canvas where the graphical table is
-    canvas->repaint();
     canvas->repaint();
 }

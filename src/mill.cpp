@@ -17,6 +17,7 @@ Mill::Mill() {
     table = new Table();
     this->initTable(true);
     n = 500;
+    debug = false;
 }
 
 Mill::~Mill() {
@@ -100,7 +101,7 @@ void Mill::getBestMoveOneThread(Node *move) {
     }
 }
 
-string Mill::getBestMoveMCTS() {
+void Mill::setBestMoveMCTS() {
     time_t start, end;
     int n_thread = thread::hardware_concurrency();
     vector<Node*> nodes;
@@ -133,23 +134,26 @@ string Mill::getBestMoveMCTS() {
             bestVisit = it.second.nVisits;
             bestMove = it.first;
         }
-        /*
+        if (debug) {
         printf("%s %.0f/%.0f\n",
                 it.first.toString().c_str(),
                 it.second.totValue,
                 it.second.nVisits);
-                */
+        }
         totValue += it.second.totValue;
         nVisits += it.second.nVisits;
     }
     time(&end);
-    //printf("best move: %s (%.0f/%.0f)\n", bestMove.toString().c_str(), totValue, nVisits);
-    //printf("elapsed time: %ld\n", end - start);
+    if (debug) {
+        printf("best move: %s (%.0f/%.0f)\n", bestMove.toString().c_str(), totValue, nVisits);
+        printf("elapsed time: %ld\n", end - start);
+    }
     for (Node *node : nodes) {
         delete node;
     }
     for (Table* table : tables) {
         delete table;
     }
-    return bestMove.toString();
+    bestMoveStr =  bestMove.toString();
+    thinking = false;
 }

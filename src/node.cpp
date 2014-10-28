@@ -43,7 +43,7 @@ void Node::selectAction() {
         visited.push_back(cur);
     }
     Node *newNode;
-    int value = table->isEnd();
+    int value = MAX_LONG * table->isEnd();
     if (value == 0) {
         cur->expand();
         newNode = cur->select(visited.size());
@@ -89,7 +89,8 @@ int Node::evaluate(const Node *newNode) {
     int end = table->isEnd();
     if (end != 0) {
         t.restorePosition(table);
-        return end;
+        return MAX_LONG * end;
+        //return end;
     }
     for (int i = 0; i < MAX_LONG; i++) {
         vector<Move> moves = getTerminateMoves();
@@ -101,7 +102,8 @@ int Node::evaluate(const Node *newNode) {
         int end = table->isEnd();
         if (end != 0) {
             t.restorePosition(table);
-            return end;
+            //return end;
+            return (MAX_LONG - i) * end;
         }
     }
     t.restorePosition(table);
@@ -155,8 +157,8 @@ Node *Node::getBest() {
     Node *selected = nullptr;
     double bestValue = -10e10;
     for (Node *c : children) {
-        if (c->nVisits > bestValue) {
-            bestValue = c->nVisits;
+        if (c->totValue > bestValue) {
+            bestValue = c->totValue;
             selected = c;
         }
     }

@@ -22,11 +22,14 @@ class Mill {
         int getHistoryIdx();
         void setHistoryIdx(int idx);
         void updateTable();
-        std::string getBestMoveMCTS();
+        void setBestMoveMCTS();
         void getBestMoveOneThread(Node *move);
         void backupPosition(const Mill *mill);
         void restorePosition(Mill *mill);
         int n;
+        std::string bestMoveStr;
+        bool thinking;
+        bool debug;
 
     private:
         std::vector<QString> history;
