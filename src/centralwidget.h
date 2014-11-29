@@ -7,6 +7,7 @@
 
 class QGridLayout;
 class QHBoxLayout;
+class QCheckBox;
 class QLineEdit;
 class QTextEdit;
 class QLabel;
@@ -34,7 +35,9 @@ signals:
         QHBoxLayout* hboxSend;
         QHBoxLayout* hboxWhiteHand;
         QHBoxLayout* hboxBlackHand;
+        QHBoxLayout* hboxMakeMove;
         QHBoxLayout* hboxHistoryButton;
+        QCheckBox* cbTwoPlayer;
         QLineEdit* lineEditTurn;
         QLabel* labelHistory;
         QLabel* labelWhiteHand;

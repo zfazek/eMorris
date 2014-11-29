@@ -27,6 +27,8 @@ void CentralWidget::initGui() {
     labelBlackHand = new QLabel("");
     hboxWhiteHand = new QHBoxLayout();
     hboxBlackHand = new QHBoxLayout();
+    hboxMakeMove = new QHBoxLayout();
+    cbTwoPlayer = new QCheckBox("2 Players");
     hboxWhiteHand->addWidget(labelWhiteHand);
     hboxBlackHand->addWidget(labelBlackHand);
     labelHistory = new QLabel("History: ");
@@ -71,7 +73,9 @@ void CentralWidget::initGui() {
     buttonMove = new QPushButton("make move");
     this->connect(buttonMove, SIGNAL(clicked()),
             this, SLOT(makeMove()));
-    grid->addWidget(buttonMove, 18, 8, 1, 1);
+    hboxMakeMove->addWidget(cbTwoPlayer);
+    hboxMakeMove->addWidget(buttonMove);
+    grid->addLayout(hboxMakeMove, 18, 8);
     printTable();
 }
 
@@ -83,7 +87,9 @@ void CentralWidget::MoveDoubleClicked(QListWidgetItem *item) {
     if (isEnd != 0) {
         return;
     }
-    makeMove();
+    if (! cbTwoPlayer->isChecked()) {
+        makeMove();
+    }
 }
 
 void CentralWidget::makeMove() {
@@ -93,6 +99,7 @@ void CentralWidget::makeMove() {
     buttonHistoryPrev->setEnabled(false);
     buttonHistoryNext->setEnabled(false);
     buttonMove->setEnabled(false);
+    cbTwoPlayer->setEnabled(false);
     mill->thinking = true;
     std::thread t(&Mill::setBestMoveMCTS, mill);
     while (mill->thinking) {
@@ -106,6 +113,7 @@ void CentralWidget::makeMove() {
     buttonHistoryNext->setEnabled(true);
     buttonMove->setEnabled(true);
     listWidget->setEnabled(true);
+    cbTwoPlayer->setEnabled(true);
     string bestMove = mill->bestMoveStr;
     mill->move(Move::getMove(QString::fromStdString(bestMove)), true);
     printTable();
