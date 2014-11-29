@@ -98,10 +98,23 @@ int Table::getBlackHand() {
 void Table::initTable() {
     data.whiteHand = 9;
     data.blackHand = 9;
+    initData.whiteHand = 9;
+    initData.blackHand = 9;
     for (int i = 0; i < 24; ++i) {
         data.table[i] = EMPTY;
+        initData.table[i] = EMPTY;
     }
     data.whiteToMove = true;
+    initData.whiteToMove = true;
+}
+
+void Table::restoreInitTable() {
+    data.whiteHand = initData.whiteHand;
+    data.blackHand = initData.blackHand;
+    for (int i = 0; i < 24; ++i) {
+        data.table[i] = initData.table[i];
+    }
+    data.whiteToMove = initData.whiteToMove;
 }
 
 /******************************************************************************

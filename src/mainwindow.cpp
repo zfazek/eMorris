@@ -43,13 +43,11 @@ void MainWindow::copyPosToClipboard() {
     ret += " " + QString::number(data.blackHand);
     ret += data.whiteToMove ? " w" : " b";
     ret += "\n";
-    printf("%s\n", ret.toStdString().c_str());
     clipboard->setText(ret);
 }
 
 void MainWindow::setPosFromClipboard() {
     QString clip = clipboard->text();
-    printf("%s\n", clip.toStdString().c_str());
     int t[24];
     for (int i = 0; i < 24; i++) {
         if (clip.at(i) < '0' || clip.at(i) > '2') {
@@ -96,7 +94,9 @@ void MainWindow::setPosFromClipboard() {
 }
 
 void MainWindow::clipboardParseError(QString clipboard, int idx) {
-    printf("Parse error at %d: %s\n", idx, clipboard.toStdString().c_str());
+    QMessageBox msgBox(this);
+    msgBox.setText("parse error at " + QString::number(idx) + ": " + clipboard);
+    msgBox.exec();
 }
 
 void MainWindow::newGame() {

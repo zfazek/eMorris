@@ -73,7 +73,7 @@ void Mill::setHistoryIdx(int idx) {
  *
  ******************************************************************************/
 void Mill::updateTable() {
-    initTable(false);
+    table->restoreInitTable();
     for (int i = 0; i <= historyIdx; i++) {
         table->moveCheck(Move::getMove(history[i]), true);
     }
@@ -102,46 +102,50 @@ void Mill::getBestMoveOneThread(Node *move) {
 }
 
 void Mill::setBestMoveMCTS() {
+    Move bestMove;
+    double totValue = 0;
+    double nVisits = 0;
     time_t start, end;
     int n_thread = thread::hardware_concurrency();
     vector<Node*> nodes;
     vector<thread> threads;
     vector<Table*> tables;
     time(&start);
-    for (int i = 0; i < n_thread; i++) {
-        Table *t = new Table(table);
-        tables.push_back(t);
-        Node *node = new Node(t, n);
-        nodes.push_back(node);
-        threads.push_back(thread(&Mill::getBestMoveOneThread, this, nodes[i]));
-    }
-    for (thread &t : threads) {
-        t.join();
-    }
-    unordered_map<Move, Point, MovetHasher> children;
-    for (int i = 0; i < n_thread; i++) {
-        for (const Node *c : nodes[i]->getChildren()) {
-            children[c->currMove].totValue += c->totValue;
-            children[c->currMove].nVisits += c->nVisits;
+    if (table->getAllMoves().size() == 1) {
+        bestMove = table->getAllMoves()[0];
+    } else {
+        for (int i = 0; i < n_thread; i++) {
+            Table *t = new Table(table);
+            tables.push_back(t);
+            Node *node = new Node(t, n);
+            nodes.push_back(node);
+            threads.push_back(thread(&Mill::getBestMoveOneThread, this, nodes[i]));
         }
-    }
-    Move bestMove;
-    double bestVisit = 0;
-    double totValue = 0;
-    double nVisits = 0;
-    for (const auto &it : children) {
-        if (it.second.nVisits > bestVisit) {
-            bestVisit = it.second.nVisits;
-            bestMove = it.first;
+        for (thread &t : threads) {
+            t.join();
         }
-        if (debug) {
-        printf("%s %.0f/%.0f\n",
-                it.first.toString().c_str(),
-                it.second.totValue,
-                it.second.nVisits);
+        unordered_map<Move, Point, MovetHasher> children;
+        for (int i = 0; i < n_thread; i++) {
+            for (const Node *c : nodes[i]->getChildren()) {
+                children[c->currMove].totValue += c->totValue;
+                children[c->currMove].nVisits += c->nVisits;
+            }
         }
-        totValue += it.second.totValue;
-        nVisits += it.second.nVisits;
+        double bestVisit = 0;
+        for (const auto &it : children) {
+            if (it.second.nVisits > bestVisit) {
+                bestVisit = it.second.nVisits;
+                bestMove = it.first;
+            }
+            if (debug) {
+                printf("%s %.0f/%.0f\n",
+                        it.first.toString().c_str(),
+                        it.second.totValue,
+                        it.second.nVisits);
+            }
+            totValue += it.second.totValue;
+            nVisits += it.second.nVisits;
+        }
     }
     time(&end);
     if (debug) {

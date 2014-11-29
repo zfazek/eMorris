@@ -24,11 +24,13 @@ struct Table {
         Table(const Table* table);
         ~Table();
         TableData data;
+        TableData initData;
         int getWhiteHand();
         int getBlackHand();
         void initRules();
         void printTable();
         void initTable();
+        void restoreInitTable();
         bool isMill(int idx, int color);
         int moveCheck(Move move, bool updateHistory);
         int moveCheck(int x, bool makeMove);

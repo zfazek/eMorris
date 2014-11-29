@@ -214,7 +214,18 @@ void CentralWidget::printHistory() {
         i++;
     }
     textEditHistory->clear();
+    QPalette *palette = new QPalette();
+    palette->setColor(QPalette::Text,Qt::black);
+    textEditHistory->setPalette(*palette);
     textEditHistory->setText(s);
+    /*
+    printf("idx: %d, i: %d, size: %d\n", idx, i, history.size());
+    if (i < (int)history.size()) {
+        QPalette *palette = new QPalette();
+        palette->setColor(QPalette::Text,Qt::gray);
+        textEditHistory->setPalette(*palette);
+    }
+    */
     QTextCursor c =  textEditHistory->textCursor();
     c.movePosition(QTextCursor::End);
     textEditHistory->setTextCursor(c);
@@ -257,8 +268,12 @@ void CentralWidget::setTableData(TableData d) {
     mill->table->data.whiteHand = d.whiteHand;
     mill->table->data.blackHand = d.blackHand;
     mill->table->data.whiteToMove = d.whiteToMove;
+    mill->table->initData.whiteHand = d.whiteHand;
+    mill->table->initData.blackHand = d.blackHand;
+    mill->table->initData.whiteToMove = d.whiteToMove;
     for (int i = 0; i < 24; i++) {
         mill->table->data.table[i] = d.table[i];
+        mill->table->initData.table[i] = d.table[i];
     }
     mill->clearHistory();
     printTable();
