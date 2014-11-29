@@ -36,7 +36,7 @@ void Node::selectAction() {
     Node *cur = this;
     visited.push_back(this);
     backupTable->restorePosition(table);
-    bool whiteToMove = table->whiteToMove;
+    bool whiteToMove = table->data.whiteToMove;
     while (!cur->isLeaf()) {
         cur = cur->select(visited.size());
         table->moveCheck(cur->currMove, true);

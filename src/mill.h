@@ -21,6 +21,7 @@ class Mill {
         int move(Move move, bool updateHistory);
         int getHistoryIdx();
         void setHistoryIdx(int idx);
+        void clearHistory();
         void updateTable();
         void setBestMoveMCTS();
         void getBestMoveOneThread(Node *move);

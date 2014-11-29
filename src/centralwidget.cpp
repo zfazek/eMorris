@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdio.h>
 #include "centralwidget.h"
+#include "mainwindow.h"
 #include "table.h"
 #include "mill.h"
 #include "move.h"
@@ -16,6 +17,10 @@ using namespace std;
 CentralWidget::CentralWidget() {
     mill = new Mill();
     initGui();
+}
+
+void CentralWidget::setMainWindow(MainWindow* main) {
+    mainWindow = main;
 }
 
 void CentralWidget::initGui() {
@@ -92,14 +97,19 @@ void CentralWidget::MoveDoubleClicked(QListWidgetItem *item) {
     }
 }
 
+void CentralWidget::enableWidgets(bool enable) {
+    listWidget->setEnabled(enable);
+    buttonHistoryToStart->setEnabled(enable);
+    buttonHistoryToEnd->setEnabled(enable);
+    buttonHistoryPrev->setEnabled(enable);
+    buttonHistoryNext->setEnabled(enable);
+    buttonMove->setEnabled(enable);
+    cbTwoPlayer->setEnabled(enable);
+    mainWindow->enableMenus(enable);
+}
+
 void CentralWidget::makeMove() {
-    listWidget->setEnabled(false);
-    buttonHistoryToStart->setEnabled(false);
-    buttonHistoryToEnd->setEnabled(false);
-    buttonHistoryPrev->setEnabled(false);
-    buttonHistoryNext->setEnabled(false);
-    buttonMove->setEnabled(false);
-    cbTwoPlayer->setEnabled(false);
+    enableWidgets(false);
     mill->thinking = true;
     std::thread t(&Mill::setBestMoveMCTS, mill);
     while (mill->thinking) {
@@ -107,13 +117,7 @@ void CentralWidget::makeMove() {
         usleep(300);
     }
     t.join();
-    buttonHistoryToStart->setEnabled(true);
-    buttonHistoryToEnd->setEnabled(true);
-    buttonHistoryPrev->setEnabled(true);
-    buttonHistoryNext->setEnabled(true);
-    buttonMove->setEnabled(true);
-    listWidget->setEnabled(true);
-    cbTwoPlayer->setEnabled(true);
+    enableWidgets(true);
     string bestMove = mill->bestMoveStr;
     mill->move(Move::getMove(QString::fromStdString(bestMove)), true);
     printTable();
@@ -222,7 +226,7 @@ void CentralWidget::printHistory() {
  *
  ******************************************************************************/
 void CentralWidget::printTable() {
-    if (mill->table->whiteToMove) {
+    if (mill->table->data.whiteToMove) {
         lineEditTurn->setText("White to move");
     } else {
         lineEditTurn->setText("Black to move");
@@ -244,3 +248,19 @@ void CentralWidget::printTable() {
     // Updates the canvas where the graphical table is
     canvas->repaint();
 }
+
+TableData CentralWidget::getTableData() {
+    return mill->table->getTableData();
+}
+
+void CentralWidget::setTableData(TableData d) {
+    mill->table->data.whiteHand = d.whiteHand;
+    mill->table->data.blackHand = d.blackHand;
+    mill->table->data.whiteToMove = d.whiteToMove;
+    for (int i = 0; i < 24; i++) {
+        mill->table->data.table[i] = d.table[i];
+    }
+    mill->clearHistory();
+    printTable();
+}
+

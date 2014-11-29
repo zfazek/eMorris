@@ -157,3 +157,8 @@ void Mill::setBestMoveMCTS() {
     bestMoveStr =  bestMove.toString();
     thinking = false;
 }
+
+void Mill::clearHistory() {
+    setHistoryIdx(-1);
+    history.clear();
+}

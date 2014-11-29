@@ -18,17 +18,25 @@ class Mill;
 class Canvas;
 class QListWidget;
 class QListWidgetItem;
+class TableData;
+class MainWindow;
 
 class CentralWidget : public QWidget {
     Q_OBJECT
 
     public:
-        explicit CentralWidget();
+        Mill* mill;
+
+        CentralWidget();
         void printTable();
+        TableData getTableData();
+        void setTableData(TableData data);
+        void setMainWindow(MainWindow* mainWindow);
 
 signals:
 
     private:
+        MainWindow* mainWindow;
         QGridLayout* grid;
         QTextEdit* textEditHistory;
         QHBoxLayout* hboxStart;
@@ -51,7 +59,6 @@ signals:
         QLabel* labels[24];
         QLabel* labelX[7];
         QLabel* labelY[7];
-        Mill* mill;
         Canvas* canvas;
         QLabel* labelTable;
         QListWidget* listWidget;
@@ -59,6 +66,7 @@ signals:
         void initGui();
         void printHistory();
         void printGameOver(int isEnd);
+        void enableWidgets(bool enable);
 
         private slots:
             void historyToStart();

@@ -9,17 +9,21 @@ static const int EMPTY = 0;
 static const int WHITE = 1;
 static const int BLACK = 2;
 
-struct Table {
-
+struct TableData {
         bool whiteToMove;
         int table[24];
         int whiteHand;
         int blackHand;
+};
+
+struct Table {
+
         int mill[24][4];
 
         Table();
         Table(const Table* table);
         ~Table();
+        TableData data;
         int getWhiteHand();
         int getBlackHand();
         void initRules();
@@ -39,6 +43,6 @@ struct Table {
         void setPos(int* table, int whiteHand, int blackHand, bool whiteToMove);
         void backupPosition(const Table* const table);
         void restorePosition(Table* const table) const;
-
+        TableData getTableData();
 };
 

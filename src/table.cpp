@@ -76,11 +76,11 @@ Table::Table() {
 }
 
 Table::Table(const Table *t) : Table() {
-    whiteToMove = t->whiteToMove;
-    whiteHand = t->whiteHand;
-    blackHand = t->blackHand;
+    data.whiteToMove = t->data.whiteToMove;
+    data.whiteHand = t->data.whiteHand;
+    data.blackHand = t->data.blackHand;
     for (int i = 0; i < 24; i++) {
-        table[i] = t->table[i];
+        data.table[i] = t->data.table[i];
     }
 }
 
@@ -88,20 +88,20 @@ Table::~Table() {
 }
 
 int Table::getWhiteHand() {
-    return whiteHand;
+    return data.whiteHand;
 }
 
 int Table::getBlackHand() {
-    return blackHand;
+    return data.blackHand;
 }
 
 void Table::initTable() {
-    whiteHand = 9;
-    blackHand = 9;
+    data.whiteHand = 9;
+    data.blackHand = 9;
     for (int i = 0; i < 24; ++i) {
-        table[i] = EMPTY;
+        data.table[i] = EMPTY;
     }
-    whiteToMove = true;
+    data.whiteToMove = true;
 }
 
 /******************************************************************************
@@ -145,23 +145,23 @@ int Table::moveCheck(Move move, bool updateHistory) {
  *
  ******************************************************************************/
 int Table::moveCheck(int i, bool makeMove) {
-    if (whiteToMove and whiteHand == 0) return -1;
-    if (! whiteToMove and blackHand == 0) return -1;
-    if (table[i] != EMPTY) return -1;
-    if (whiteToMove) {
+    if (data.whiteToMove and data.whiteHand == 0) return -1;
+    if (! data.whiteToMove and data.blackHand == 0) return -1;
+    if (data.table[i] != EMPTY) return -1;
+    if (data.whiteToMove) {
         if (isMill(i, WHITE)) return -1;
         if (makeMove) {
-            table[i] = WHITE;
-            whiteToMove = false;
-            --whiteHand;
+            data.table[i] = WHITE;
+            data.whiteToMove = false;
+            --data.whiteHand;
         }
         return 0;
     } else {
         if (isMill(i, BLACK)) return -1;
         if (makeMove) {
-            table[i] = BLACK;
-            whiteToMove = true;
-            --blackHand;
+            data.table[i] = BLACK;
+            data.whiteToMove = true;
+            --data.blackHand;
         }
         return 0;
     }
@@ -179,80 +179,80 @@ int Table::moveCheck(int i, bool makeMove) {
 int Table::moveCheck(int i1, int i2, bool makeMove, int n_white, int n_black) {
 
     /* Simple WHITE move */
-    if (whiteToMove && whiteHand == 0) {
-        if (table[i1] != WHITE) return -1;
-        if (table[i2] != EMPTY) return -1;
+    if (data.whiteToMove && data.whiteHand == 0) {
+        if (data.table[i1] != WHITE) return -1;
+        if (data.table[i2] != EMPTY) return -1;
         if (n_white > 3 && ! isNeighbor(i1, i2)) return -1;
-        table[i1] = EMPTY;
-        table[i2] = WHITE;
+        data.table[i1] = EMPTY;
+        data.table[i2] = WHITE;
 
         /* Move into mill but there is no pick */
         if (isMill(i2, WHITE)) {
-            table[i1] = WHITE;
-            table[i2] = EMPTY;
+            data.table[i1] = WHITE;
+            data.table[i2] = EMPTY;
             return -1;
         }
         if (makeMove) {
-            whiteToMove = false;
+            data.whiteToMove = false;
         } else {
-            table[i1] = WHITE;
-            table[i2] = EMPTY;
+            data.table[i1] = WHITE;
+            data.table[i2] = EMPTY;
         }
         return 0;
     }
 
     /* Simple BLACK move */
-    if (!whiteToMove && blackHand == 0) {
-        if (table[i1] != BLACK) return -1;
-        if (table[i2] != EMPTY) return -1;
+    if (!data.whiteToMove && data.blackHand == 0) {
+        if (data.table[i1] != BLACK) return -1;
+        if (data.table[i2] != EMPTY) return -1;
         if (n_black > 3 && ! isNeighbor(i1, i2)) return -1;
-        table[i1] = EMPTY;
-        table[i2] = BLACK;
+        data.table[i1] = EMPTY;
+        data.table[i2] = BLACK;
 
         /* Move into mill but there is no pick */
         if (isMill(i2, BLACK)) {
-            table[i1] = BLACK;
-            table[i2] = EMPTY;
+            data.table[i1] = BLACK;
+            data.table[i2] = EMPTY;
             return -1;
         }
         if (makeMove) {
-            whiteToMove = true;
+            data.whiteToMove = true;
         } else {
-            table[i1] = BLACK;
-            table[i2] = EMPTY;
+            data.table[i1] = BLACK;
+            data.table[i2] = EMPTY;
         }
         return 0;
     }
 
     /* Mill from hand */
-    if (whiteToMove && whiteHand > 0) {
-        if (table[i1] != EMPTY) return -1;
-        if (table[i2] != BLACK) return -1;
+    if (data.whiteToMove && data.whiteHand > 0) {
+        if (data.table[i1] != EMPTY) return -1;
+        if (data.table[i2] != BLACK) return -1;
         if (isMill(i1, WHITE)) {
 
             /* You can not pick from mill */
             if (isMill(i2, BLACK) && hasSoloMorris(BLACK)) return -1;
             if (makeMove) {
-                table[i1] = WHITE;
-                table[i2] = EMPTY;
-                whiteToMove = false;
-                --whiteHand;
+                data.table[i1] = WHITE;
+                data.table[i2] = EMPTY;
+                data.whiteToMove = false;
+                --data.whiteHand;
             }
             return 0;
         }
     }
-    if (!whiteToMove && blackHand > 0) {
-        if (table[i1] != EMPTY) return -1;
-        if (table[i2] != WHITE) return -1;
+    if (!data.whiteToMove && data.blackHand > 0) {
+        if (data.table[i1] != EMPTY) return -1;
+        if (data.table[i2] != WHITE) return -1;
         if (isMill(i1, BLACK)) {
 
             /* You can not pick from mill */
             if (isMill(i2, WHITE) && hasSoloMorris(WHITE)) return -1;
             if (makeMove) {
-                table[i1] = BLACK;
-                table[i2] = EMPTY;
-                whiteToMove = true;
-                --blackHand;
+                data.table[i1] = BLACK;
+                data.table[i2] = EMPTY;
+                data.whiteToMove = true;
+                --data.blackHand;
             }
             return 0;
         }
@@ -269,56 +269,56 @@ int Table::moveCheck(int i1, int i2, bool makeMove, int n_white, int n_black) {
  *
  ******************************************************************************/
 int Table::moveCheck(int i1, int i2, int i3, bool makeMove, int n_white, int n_black) {
-    if (whiteToMove && whiteHand == 0) {
-        if (table[i1] != WHITE) return -1;
-        if (table[i2] != EMPTY) return -1;
-        if (table[i3] != BLACK) return -1;
+    if (data.whiteToMove && data.whiteHand == 0) {
+        if (data.table[i1] != WHITE) return -1;
+        if (data.table[i2] != EMPTY) return -1;
+        if (data.table[i3] != BLACK) return -1;
         if (n_white > 3 && ! isNeighbor(i1, i2)) return -1;
-        table[i1] = EMPTY;
-        table[i2] = WHITE;
+        data.table[i1] = EMPTY;
+        data.table[i2] = WHITE;
         if (!isMill(i2, WHITE)) {
-            table[i1] = WHITE;
-            table[i2] = EMPTY;
+            data.table[i1] = WHITE;
+            data.table[i2] = EMPTY;
             return -1;
         }
         if (isMill(i3, BLACK) && hasSoloMorris(BLACK)) {
-            table[i1] = WHITE;
-            table[i2] = EMPTY;
+            data.table[i1] = WHITE;
+            data.table[i2] = EMPTY;
             return -1;
         }
         if (makeMove) {
-            table[i3] = EMPTY;
-            whiteToMove = false;
+            data.table[i3] = EMPTY;
+            data.whiteToMove = false;
         } else {
-            table[i1] = WHITE;
-            table[i2] = EMPTY;
+            data.table[i1] = WHITE;
+            data.table[i2] = EMPTY;
         }
         return 0;
     }
 
-    if (! whiteToMove && blackHand == 0) {
-        if (table[i1] != BLACK) return -1;
-        if (table[i2] != EMPTY) return -1;
-        if (table[i3] != WHITE) return -1;
+    if (! data.whiteToMove && data.blackHand == 0) {
+        if (data.table[i1] != BLACK) return -1;
+        if (data.table[i2] != EMPTY) return -1;
+        if (data.table[i3] != WHITE) return -1;
         if (n_black > 3 && ! isNeighbor(i1, i2)) return -1;
-        table[i1] = EMPTY;
-        table[i2] = BLACK;
+        data.table[i1] = EMPTY;
+        data.table[i2] = BLACK;
         if (!isMill(i2, BLACK)) {
-            table[i1] = BLACK;
-            table[i2] = EMPTY;
+            data.table[i1] = BLACK;
+            data.table[i2] = EMPTY;
             return -1;
         }
         if (isMill(i3, WHITE) && hasSoloMorris(WHITE)) {
-            table[i1] = BLACK;
-            table[i2] = EMPTY;
+            data.table[i1] = BLACK;
+            data.table[i2] = EMPTY;
             return -1;
         }
         if (makeMove) {
-            table[i3] = EMPTY;
-            whiteToMove = true;
+            data.table[i3] = EMPTY;
+            data.whiteToMove = true;
         } else {
-            table[i1] = BLACK;
-            table[i2] = EMPTY;
+            data.table[i1] = BLACK;
+            data.table[i2] = EMPTY;
         }
         return 0;
     }
@@ -331,10 +331,10 @@ int Table::moveCheck(int i1, int i2, int i3, bool makeMove, int n_white, int n_b
  *
  ******************************************************************************/
 bool Table::isMill(int idx, int color) {
-    if (table[mill[idx][0]] == color &&
-            table[mill[idx][1]] == color) return true;
-    if (table[mill[idx][2]] == color &&
-            table[mill[idx][3]] == color) return true;
+    if (data.table[mill[idx][0]] == color &&
+            data.table[mill[idx][1]] == color) return true;
+    if (data.table[mill[idx][2]] == color &&
+            data.table[mill[idx][3]] == color) return true;
     return false;
 }
 
@@ -346,7 +346,7 @@ bool Table::isMill(int idx, int color) {
 int Table::getNofPiece(int color) {
     int n = 0;
     for (int i = 0; i < 24; i++) {
-        if (table[i] == color) {
+        if (data.table[i] == color) {
             n++;
         }
     }
@@ -364,8 +364,8 @@ vector<Move> Table::getAllMoves() {
     vector<Move> moves;
     int n_white = getNofPiece(WHITE);
     int n_black = getNofPiece(BLACK);
-    if (whiteToMove) {
-        if (whiteHand > 0) {
+    if (data.whiteToMove) {
+        if (data.whiteHand > 0) {
             for (int i = 0; i < 24; i++) {
                 if (moveCheck(i, false) == 0) {
                     Move move(1, false, i);
@@ -397,7 +397,7 @@ vector<Move> Table::getAllMoves() {
             }
         }
     } else {
-        if (blackHand > 0) {
+        if (data.blackHand > 0) {
             for (int i = 0; i < 24; i++) {
                 if (moveCheck(i, false) == 0) {
                     Move move(1, false, i);
@@ -433,7 +433,7 @@ vector<Move> Table::getAllMoves() {
 }
 
 int Table::getField(int i) {
-    return table[i];
+    return data.table[i];
 }
 
 /******************************************************************************
@@ -442,13 +442,13 @@ int Table::getField(int i) {
  *
  ******************************************************************************/
 int Table::isEnd() {
-    if (whiteHand > 0) return 0;
-    if (blackHand > 0) return 0;
+    if (data.whiteHand > 0) return 0;
+    if (data.blackHand > 0) return 0;
     if (getNofPiece(WHITE) < 3) return -1;
     if (getNofPiece(BLACK) < 3) return 1;
     int n_moves = getAllMoves().size();
-    if (whiteToMove && n_moves == 0) return -1;
-    if (! whiteToMove && n_moves == 0) return 1;
+    if (data.whiteToMove && n_moves == 0) return -1;
+    if (! data.whiteToMove && n_moves == 0) return 1;
     return 0;
 }
 
@@ -473,7 +473,7 @@ bool Table::isNeighbor(int idx1, int idx2) {
  ******************************************************************************/
 bool Table::hasSoloMorris(int color) {
     for (int i = 0; i < 24; i++)
-        if (table[i] == color)
+        if (data.table[i] == color)
             if (! isMill(i, color))
                 return true;
     return false;
@@ -487,24 +487,24 @@ bool Table::hasSoloMorris(int color) {
  ******************************************************************************/
 void Table::setPos(int *t, int w, int b, bool wToMove) {
     for (int i = 0; i < 24; i++)
-        table[i] = *(t+i);
-    whiteHand = w;
-    blackHand = b;
-    whiteToMove = wToMove;
+        data.table[i] = *(t+i);
+    data.whiteHand = w;
+    data.blackHand = b;
+    data.whiteToMove = wToMove;
 }
 
 void Table::backupPosition(const Table* const t) {
-    whiteToMove = t->whiteToMove;
-    whiteHand = t->whiteHand;
-    blackHand = t->blackHand;
-    for (int i = 0; i < 24; i++) table[i] = t->table[i];
+    data.whiteToMove = t->data.whiteToMove;
+    data.whiteHand = t->data.whiteHand;
+    data.blackHand = t->data.blackHand;
+    for (int i = 0; i < 24; i++) data.table[i] = t->data.table[i];
 }
 
 void Table::restorePosition(Table* const t) const {
-    t->whiteToMove = whiteToMove;
-    t->whiteHand = whiteHand;
-    t->blackHand = blackHand;
-    for (int i = 0; i < 24; i++) t->table[i] = table[i];
+    t->data.whiteToMove = data.whiteToMove;
+    t->data.whiteHand = data.whiteHand;
+    t->data.blackHand = data.blackHand;
+    for (int i = 0; i < 24; i++) t->data.table[i] = data.table[i];
 }
 
 /******************************************************************************
@@ -513,9 +513,9 @@ void Table::restorePosition(Table* const t) const {
  *
  ******************************************************************************/
 void Table::printTable() {
-    int *t = table;
-    printf("%s\n", whiteToMove ? "White to move" : "Black to move");
-    printf("7 %d-----%d-----%d Black hand: %d\n", *t, *(t+1), *(t+2), blackHand);
+    int *t = data.table;
+    printf("%s\n", data.whiteToMove ? "White to move" : "Black to move");
+    printf("7 %d-----%d-----%d Black hand: %d\n", *t, *(t+1), *(t+2), data.blackHand);
     printf("  |     |     |\n");
     printf("6 | %d---%d---%d |\n", *(t+3), *(t+4), *(t+5));
     printf("  | |   |   | |\n");
@@ -527,7 +527,10 @@ void Table::printTable() {
     printf("  | |   |   | |\n");
     printf("2 | %d---%d---%d |\n", *(t+18), *(t+19), *(t+20));
     printf("  |     |     |\n");
-    printf("1 %d-----%d-----%d White hand: %d\n", *(t+21), *(t+22), *(t+23), whiteHand);
+    printf("1 %d-----%d-----%d White hand: %d\n", *(t+21), *(t+22), *(t+23), data.whiteHand);
     printf("  A B C D E F G\n");
 }
 
+TableData Table::getTableData() {
+    return data;
+}
